@@ -25,16 +25,28 @@ app.get('/api/animals',function (req, res) {
 
 app.get('/api/animals/:_id', function (req, res) {
     Animals.getAnimalByID(req.params._id, function (err, animals) {
-        if (err) {
+      if (err) {
             throw err;
         }
         res.json(animals);
     })
 });
 
+app.post('api/addAnimal', function(req, res) {
+    
+})
+
+/*app.post('/api/genres', (req, res) => {
+	var genre = req.body;
+	Genre.addGenre(genre, (err, genre) => {
+		if(err){
+			throw err;
+		}
+		res.json(genre);
+	});
+});*/
+
 app.get('/api/animals/:_id')
 
 app.listen(3000);
 console.log("Listening on port 3000");
-
-
