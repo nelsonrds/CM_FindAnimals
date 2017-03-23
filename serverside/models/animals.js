@@ -42,4 +42,3 @@ module.exports.getAnimalByID = function (id, callback) {
 module.exports.addAnimal = function (animal, callback) {
     Animals.create(animal, callback);
 };
-
