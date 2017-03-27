@@ -126,11 +126,11 @@ public class MainActivity extends AppCompatActivity {
             //Subistituir por strings
             switch (position) {
                 case 0:
-                    return "Map Fragment";
+                    return getString(R.string.fragment_map);
                 case 1:
-                    return "Animal Fragment";
+                    return getString(R.string.fragment_animals);
                 case 2:
-                    return "Route Fragment";
+                    return getString(R.string.fragment_route);
             }
             return null;
         }
