@@ -47,3 +47,9 @@ module.exports.addAnimal = (animal, callback) => {
 module.exports.addAnimal = function (animal, callback) {
     Animals.create(animal, callback);
 };
+
+module.exports.addAnimalLocation = function (id,locals, callback) {
+    Animals.findByIdAndUpdate(id, locals, {safe: true, upsert: true, new : true, strict: false},function(err, animal) {
+        callback(err,animal);
+    });
+};

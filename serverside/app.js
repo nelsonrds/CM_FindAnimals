@@ -37,8 +37,22 @@ app.get('/api/animals/:_id', function (req, res) {
 
 app.post('/api/addAnimal', function(req, res) {
     var animal = req.body;
-    console.log(animal);
     Animals.addAnimal(animal, function(err, animal) {
+        if (err) {
+            throw err;
+        }
+        res.json(animal);
+    })
+});
+
+app.put('/api/updateAnimalLocation/:_id', function(req, res) {
+    var idRecebido = req.params._id;
+    var location = req.body;
+    location["_id"] = 'ObjectId()';
+    console.log(location);
+
+
+    Animals.addAnimalLocation(idRecebido,{$push: {"location": location}}, function(err, animal) {
         if (err) {
             throw err;
         }
