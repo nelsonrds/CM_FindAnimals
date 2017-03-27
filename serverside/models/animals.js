@@ -19,7 +19,8 @@ var animalsSchema = mongoose.Schema({
         type: Boolean,
         required: true
     },
-    location: [{longitude: Number, latitude: Number}],
+    dateCreation: { type: Date, default: Date.now }
+    //location: [{longitude: Number, latitude: Number}],
 
 });
 
