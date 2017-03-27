@@ -5,6 +5,9 @@ var mongoose = require('mongoose');
 
 Animals = require('./models/animals');
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
+
 //Connect to mogoose
 
 mongoose.connect('mongodb://localhost/cm');
@@ -32,21 +35,18 @@ app.get('/api/animals/:_id', function (req, res) {
     })
 });
 
-app.post('api/addAnimal', function(req, res) {
-    
-})
+app.post('/api/addAnimal', function(req, res) {
+    var animal = req.body;
+    console.log(animal);
+    Animals.addAnimal(animal, function(err, animal) {
+        if (err) {
+            throw err;
+        }
+        res.json(animal);
+    })
+});
 
-/*app.post('/api/genres', (req, res) => {
-	var genre = req.body;
-	Genre.addGenre(genre, (err, genre) => {
-		if(err){
-			throw err;
-		}
-		res.json(genre);
-	});
-});*/
-
-app.get('/api/animals/:_id')
 
 app.listen(3000);
+
 console.log("Listening on port 3000");

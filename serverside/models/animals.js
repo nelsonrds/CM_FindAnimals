@@ -16,12 +16,12 @@ var animalsSchema = mongoose.Schema({
         required: true
     },
     treated: {
-        type: Number,
+        type: Boolean,
         required: true
     },
     location: [{longitude: Number, latitude: Number}],
 
-})
+});
 
 var Animals = module.exports = mongoose.model('Animals',animalsSchema);
 
@@ -38,6 +38,10 @@ module.exports.getAnimalByID = function (id, callback) {
 };
 
 //Add Animal
+
+module.exports.addAnimal = (animal, callback) => {
+	Animals.create(animal, callback);
+}
 
 module.exports.addAnimal = function (animal, callback) {
     Animals.create(animal, callback);
