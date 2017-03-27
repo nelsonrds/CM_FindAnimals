@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,12 +29,23 @@ public class mapFragment extends android.support.v4.app.Fragment{
         mapFragment fragment = new mapFragment();
         return fragment;
     }
-
+    private static View view;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.map_fragment, container, false);
-        FloatingActionButton fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+
+        if(view != null){
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null)
+                parent.removeView(view);
+            }
+        try {
+            view = inflater.inflate(R.layout.map_fragment, container, false);
+        } catch (InflateException e) {
+            /* map is already there, just return view as it is */
+        }
+
+        FloatingActionButton fab = (FloatingActionButton)view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,6 +53,7 @@ public class mapFragment extends android.support.v4.app.Fragment{
                         .setAction("Action", null).show();
             }
         });
-        return rootView;
+
+        return view;
     }
 }
