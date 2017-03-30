@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         longitudeNow=longitude;
         latitudeNow=latitude;
 
-        final String url = "http://192.168.1.65:3000/api/updateAnimalLocation/58d8ef1216a2a009a0c23d68";
+        final String url = "http://eurogather.net:3000/api/updateAnimalLocation/58dd22fea7294375fc8cd027";
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
                 new Response.Listener<String>()
                 {
@@ -147,22 +147,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //noinspection MissingPermission
                 locationManager.requestLocationUpdates("gps", 5000, 0, listener);
+                Log.d("Botao", "onClick: Entrei");
             }
         });
     }
 
 }
-
-
-
-
-
-
-
-
-    /*public void clickws1(View v){
-
-    }
-}*/
-
 
