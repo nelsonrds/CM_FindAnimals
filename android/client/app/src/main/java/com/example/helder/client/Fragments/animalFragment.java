@@ -1,5 +1,6 @@
 package com.example.helder.client.Fragments;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,7 @@ import com.example.helder.client.R;
  * Created by Nelson on 24/03/2017.
  */
 
-public class animalFragment extends android.support.v4.app.Fragment{
+public class animalFragment extends android.support.v4.app.Fragment {
     public animalFragment(){
     }
 
