@@ -55,7 +55,7 @@ app.post('/api/addAnimal', function(req, res) {
 app.put('/api/updateAnimalLocation/:_id', function(req, res) {
     var idRecebido = req.params._id;
     var location = req.body;
-    location["_id"] = 'ObjectId()';
+    location["_id"] = mongoose.Types.ObjectId();
     location['treated'] = 'false';
     console.log(location);
     console.log("Entrei");
