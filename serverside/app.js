@@ -35,10 +35,25 @@ app.get('/api/animals',function (req, res) {
 
 app.get('/api/animals/:_id', function (req, res) {
     Animals.getAnimalByID(req.params._id, function (err, animals) {
-      if (err) {
+        if (err) {
             throw err;
         }
         res.json(animals);
+    })
+});
+
+app.get('/api/animalExists/:_id', function (req, res) {
+    result = {'exists':'true'};
+    Animals.getAnimalByID(req.params._id, function(err, animals) {
+        console.log("id "+ req.params._id);
+        console.log("erro "+ err);
+        //console.log("callback "+animals.length);
+        if (err) {
+            result = {'exists':'false'};
+        } else {
+            result = {'exists':'true'};
+        }
+        res.json(result);
     })
 });
 

@@ -84,8 +84,7 @@ public class MainActivity extends AppCompatActivity {
         latitudeNow=latitude;
 
         final String url = "http://eurogather.net:3000/api/updateAnimalLocation/58dd22fea7294375fc8cd027";
-        StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
-                new Response.Listener<String>()
+        StringRequest putRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>()
                 {
                     @Override
                     public void onResponse(String response) {
