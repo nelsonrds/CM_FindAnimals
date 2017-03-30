@@ -17,6 +17,13 @@ app.get('/',function (req, res) {
     res.send('Hello World!')
 });
 
+app.get('/test',function (req, res) {
+    result = {
+        'result':'OK'
+    };
+    res.json(result);
+})
+
 app.get('/api/animals',function (req, res) {
     Animals.getAnimals(function (err, animals) {
         if (err) {
@@ -50,6 +57,7 @@ app.put('/api/updateAnimalLocation/:_id', function(req, res) {
     var location = req.body;
     location["_id"] = 'ObjectId()';
     console.log(location);
+    console.log("Entrei");
 
 
     Animals.addAnimalLocation(idRecebido,{$push: {"location": location}}, function(err, animal) {
