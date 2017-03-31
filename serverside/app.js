@@ -17,6 +17,13 @@ app.get('/',function (req, res) {
     res.send('Hello World!')
 });
 
+app.get('/test',function (req, res) {
+    result = {
+        'result':'OK'
+    };
+    res.json(result);
+})
+
 app.get('/api/animals',function (req, res) {
     Animals.getAnimals(function (err, animals) {
         if (err) {
@@ -28,10 +35,25 @@ app.get('/api/animals',function (req, res) {
 
 app.get('/api/animals/:_id', function (req, res) {
     Animals.getAnimalByID(req.params._id, function (err, animals) {
-      if (err) {
+        if (err) {
             throw err;
         }
         res.json(animals);
+    })
+});
+
+app.get('/api/animalExists/:_id', function (req, res) {
+    result = {'exists':'true'};
+    Animals.getAnimalByID(req.params._id, function(err, animals) {
+        console.log("id "+ req.params._id);
+        console.log("erro "+ err);
+        //console.log("callback "+animals.length);
+        if (err) {
+            result = {'exists':'false'};
+        } else {
+            result = {'exists':'true'};
+        }
+        res.json(result);
     })
 });
 
@@ -48,8 +70,10 @@ app.post('/api/addAnimal', function(req, res) {
 app.put('/api/updateAnimalLocation/:_id', function(req, res) {
     var idRecebido = req.params._id;
     var location = req.body;
-    location["_id"] = 'ObjectId()';
+    location["_id"] = mongoose.Types.ObjectId();
+    location['treated'] = 'false';
     console.log(location);
+    console.log("Entrei");
 
 
     Animals.addAnimalLocation(idRecebido,{$push: {"location": location}}, function(err, animal) {
