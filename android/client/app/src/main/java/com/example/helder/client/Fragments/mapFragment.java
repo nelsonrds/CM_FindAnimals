@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +44,8 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
 
     ArrayList<LatLng> pontos;
     GoogleMap nMap;
+    ImageButton btclear;
+    ImageButton btcheck;
 
     public mapFragment() {
     }
@@ -71,30 +74,33 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
             /* map is already there, just return view as it is */
         }
 
+        //Botoes
+        btclear = (ImageButton)view.findViewById(R.id.btclear);
+        btclear.setVisibility(View.GONE);
+        btclear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Limpar", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btcheck = (ImageButton)view.findViewById(R.id.btcheck);
+        btcheck.setVisibility(View.GONE);
+        btcheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Aceitar", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
 
         SupportMapFragment mMap = ((SupportMapFragment)getChildFragmentManager().findFragmentById(R.id.mapa));
         mMap.getMapAsync(this);
 
         pontos = new ArrayList<>();
 
-        //spiner
 
-        Spinner dropdown = (Spinner)view.findViewById(R.id.spiner1);
-        String[] items = new String[]{"1", "2", "three"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
-        dropdown.setAdapter(adapter);
-
-        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), "Posicao: " + String.valueOf(position), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         return view;
     }
@@ -129,6 +135,10 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
     public void onMapClick(LatLng latLng) {
 
         nMap.addMarker(new MarkerOptions().position(latLng));
+
+        //Botoes
+        btclear.setVisibility(View.VISIBLE);
+        btcheck.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -144,4 +154,9 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
             pontos = new ArrayList<>();
         }
     }
+
+    public void cancelPoly(View view){
+
+    }
+
 }
