@@ -82,45 +82,23 @@ public class animalFragment extends android.support.v4.app.Fragment {
     }
 
     private void getAnimalsWS(){
-        String url = "http://www.eurogather.net:3000/api/animals";
-        String url2 = "http://ahead.ycorn.pt/saraws/ws3.php?nome=21321&email=213121";
+        String url = "http://eurogather.net:3000/api/animals";
 
         Toast.makeText(getContext(), "getting data...", Toast.LENGTH_SHORT).show();
 
-        final JsonObjectRequest jsObjReq = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>(){
-                    @Override
-                    public void onResponse(JSONObject response){
-                        try{
-                            //lista.clear();
-                            //loc.clear();
-
-                            JSONObject js = response.getJSONObject("animals");
-
-                            Toast.makeText(getContext(), "length: " + js.toString(), Toast.LENGTH_LONG).show();
-
-                           /* for(int i = 0 ; i < response.length(); i++){
-                                JSONObject jo = response.getJSONObject(i);
-                                Toast.makeText(getContext(), jo.getString("array"), Toast.LENGTH_SHORT).show();
-                                JSONArray arr2 = jo.getJSONArray("data");
-
-
-                                Animal e = new Animal(123, jo.getString("nome"), jo.getString("owner"), true, loc, true);
-                                lista.add(e);
-                            }
-                            adapter = new MyAnimalListAdapter(getContext(), lista);
-
-                            lv.setAdapter(adapter);*/
-
-                        }catch (Exception ex){}
-                    }
-                }, new Response.ErrorListener(){
-                    @Override
-                    public void onErrorResponse(VolleyError error){
-                        Toast.makeText(getContext(), Utils.param_dados + error.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
-        Singleton.getInstance(getContext()).addToRequestQeueu(jsObjReq);
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                // display response
+                Log.d("Response", response.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("Error.Response", error.toString());
+            }
+        });
+        Singleton.getInstance(getContext()).addToRequestQeueu(getRequest);
     }
 
 
