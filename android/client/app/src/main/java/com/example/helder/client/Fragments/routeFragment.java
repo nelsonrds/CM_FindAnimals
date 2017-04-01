@@ -1,17 +1,29 @@
 package com.example.helder.client.Fragments;
 
 import android.os.Bundle;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
+import com.example.helder.client.DataBase.Animal;
+import com.example.helder.client.DataBase.Location;
 import com.example.helder.client.R;
+import com.google.android.gms.common.api.GoogleApiClient;
+
+import java.util.ArrayList;
+
+import static com.example.helder.client.Fragments.animalFragment.lista;
 
 /**
  * Created by Nelson on 24/03/2017.
  */
 
 public class routeFragment extends android.support.v4.app.Fragment {
+
+    private static View view;
 
     public routeFragment(){
     }
@@ -24,8 +36,19 @@ public class routeFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.route_fragment, container, false);
+        if(view != null){
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null)
+                parent.removeView(view);
+        }
+        try {
+            view = inflater.inflate(R.layout.route_fragment, container, false);
+        } catch (InflateException e) {
 
-        return rootView;
+        }
+
+
+
+        return view;
     }
 }

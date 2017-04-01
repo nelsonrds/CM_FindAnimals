@@ -47,6 +47,8 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
     ImageButton btclear;
     ImageButton btcheck;
 
+    ArrayList<LatLng> dots;
+
     public mapFragment() {
     }
 
@@ -100,6 +102,17 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
 
         pontos = new ArrayList<>();
 
+        dots = new ArrayList<>();
+
+        LatLng novo = new LatLng(41.69430348, -8.84685147);
+        LatLng novo2 = new LatLng(41.69430348, -8.84685147);
+        LatLng novo3 = new LatLng(41.69430883, -8.84684781);
+        LatLng novo4 = new LatLng(41.69431187, -8.84684867);
+
+        dots.add(novo);
+        dots.add(novo2);
+        dots.add(novo3);
+        dots.add(novo4);
 
 
         return view;
@@ -115,7 +128,11 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
                 .title("Marker"));
         //Toast.makeText(, "onMapReady", Toast.LENGTH_SHORT).show();
 
-        LatLng ltn = new LatLng(41.1, -8.2);
+        for(int i = 0 ; i < 4; i ++){
+            nMap.addMarker(new MarkerOptions().position(dots.get(i)));
+        }
+
+        LatLng ltn = new LatLng(41.6, -8.84);
 
         CameraPosition cm = new CameraPosition.Builder()
                 .zoom(15)
@@ -127,7 +144,6 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
         //eventos de click
         googleMap.setOnMapClickListener(this);
         googleMap.setOnMapLongClickListener(this);
-
 
     }
 

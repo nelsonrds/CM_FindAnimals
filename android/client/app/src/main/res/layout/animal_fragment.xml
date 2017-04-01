@@ -3,7 +3,17 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:text="My Animals"
+        android:textSize="20dp"
+        android:id="@+id/txttitleAnimals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <ListView
+        android:layout_below="@+id/txttitleAnimals"
         android:id="@+id/animalList"
         android:layout_margin="15dp"
         android:layout_width="match_parent"
