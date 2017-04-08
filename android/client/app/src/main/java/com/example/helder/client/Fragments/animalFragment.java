@@ -73,16 +73,15 @@ public class animalFragment extends android.support.v4.app.Fragment {
 
         lv = (ListView)view.findViewById(R.id.animalList);
 
-
-        adapter = new MyAnimalListAdapter(this.getContext(), lista);
-
         getAnimalsWS();
+
+
 
         return view;
     }
 
     private void getAnimalsWS(){
-        String url = "http://eurogather.net:3000/api/animals";
+        final String url = "http://eurogather.net:3000/api/animals";
 
         Toast.makeText(getContext(), "getting data...", Toast.LENGTH_SHORT).show();
 
@@ -90,12 +89,44 @@ public class animalFragment extends android.support.v4.app.Fragment {
             @Override
             public void onResponse(JSONObject response) {
                 // display response
-                Log.d("Response", response.toString());
+                lista.clear();
+                loc.clear();
+
+                try{
+                    //Toast.makeText(getContext(), ""+response.getString(an), Toast.LENGTH_LONG).show();
+                    JSONArray ja = response.getJSONArray("animals");
+                    for(int i = 0 ; i < ja.length(); i++){
+                        JSONObject jobj = ja.getJSONObject(i);
+
+                        Animal aux = new Animal();
+                        aux.setAnimalName(jobj.getString("nome"));
+                        aux.setOwnerId(jobj.getString("owner"));
+                        aux.setChecked(true);
+
+                        JSONArray jaLocation = jobj.getJSONArray("location");
+                        for(int j = 0; j < jaLocation.length(); j++){
+                            JSONObject jobjLoc = jaLocation.getJSONObject(j);
+                            Location auxLocation = new Location(jobjLoc.getString("latitude"),jobjLoc.getString("longitude"));
+                            loc.add(auxLocation);
+                        }
+
+                        aux.setAnimalLocation(loc);
+                        lista.add(aux);
+                    }
+
+                    adapter = new MyAnimalListAdapter(getContext(), lista);
+
+                    lv.setAdapter(adapter);
+                }catch(JSONException ex){
+
+                }
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("Error.Response", error.toString());
+                Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
             }
         });
         Singleton.getInstance(getContext()).addToRequestQeueu(getRequest);

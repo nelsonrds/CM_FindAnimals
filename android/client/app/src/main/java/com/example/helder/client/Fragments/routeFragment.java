@@ -47,6 +47,8 @@ public class routeFragment extends android.support.v4.app.Fragment {
 
         }
 
+        Toast.makeText(getContext(), ""+lista.size() ,Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), ""+lista.get(0).getAnimalLocation().size() ,Toast.LENGTH_SHORT).show();
 
 
         return view;

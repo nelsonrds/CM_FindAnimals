@@ -10,4 +10,5 @@
     <string name="fragment_map">Map</string>
     <string name="fragment_animals">Animals</string>
     <string name="fragment_route">Routes</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>
