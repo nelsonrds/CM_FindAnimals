@@ -3,6 +3,7 @@ package com.example.helder.animal;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -16,7 +17,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -24,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -31,13 +35,21 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button button;
-    private TextView textView;
     private LocationManager locationManager;
     private LocationListener listener;
 
     private double latitudeNow;
     private double longitudeNow;
+
+    private EditText idAnimal;
+    private TextView tvLatitude;
+    private TextView tvLongitude;
+    private TextView tvMsg;
+
+    private Button btnLocalizar;
+    private Button btnParar;
+
+    final String urlInicial = "http://eurogather.net:3000/api/";
 
 
     @Override
@@ -46,8 +58,13 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        textView = (TextView) findViewById(R.id.textView);
-        button = (Button) findViewById(R.id.button);
+        idAnimal = (EditText) findViewById(R.id.etAnimalID);
+        tvLatitude = (TextView) findViewById(R.id.tvLatitude);
+        tvLongitude = (TextView) findViewById(R.id.tvLongitude);
+        tvMsg = (TextView) findViewById(R.id.tvMsg);
+        tvMsg.setVisibility(View.INVISIBLE);
+        btnLocalizar = (Button) findViewById(R.id.btnLocalizar);
+        btnParar = (Button) findViewById(R.id.btnStop);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -55,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
         listener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                textView.append("\n " + location.getLongitude() + " " + location.getLatitude());
+                tvLatitude.setText(location.getLatitude()+"");
+                tvLongitude.setText(location.getLongitude()+"");
                 receiveCoordinates(location.getLongitude(),location.getLatitude());
             }
 
@@ -80,20 +98,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void receiveCoordinates(final double longitude, double latitude) {
-        longitudeNow=longitude;
-        latitudeNow=latitude;
+        longitudeNow = longitude;
+        latitudeNow = latitude;
 
-        final String url = "http://eurogather.net:3000/api/updateAnimalLocation/58dd22fea7294375fc8cd027";
-        StringRequest putRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>()
-                {
-                    @Override
-                    public void onResponse(String response) {
-                        // response
-                        Log.d("Response", response);
-                    }
-                },
-                new Response.ErrorListener()
-                {
+        String url = urlInicial + "updateAnimalLocation/"+idAnimal.getText().toString();
+        StringRequest putRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                // response
+                Log.d("Response", response);
+            }
+        },
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // error
@@ -103,9 +119,8 @@ public class MainActivity extends AppCompatActivity {
         ) {
 
             @Override
-            protected Map<String, String> getParams()
-            {
-                Map<String, String>  params = new HashMap<String, String> ();
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
                 params.put("latitude", Double.toString(latitudeNow));
                 params.put("longitude", Double.toString(longitudeNow));
 
@@ -128,6 +143,98 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void botaoStart(View v) {
+
+        String animalAux = idAnimal.getText().toString();
+        if (!animalAux.matches("")) {
+
+            tvMsg.setText("Checking ID...");
+            tvMsg.setVisibility(View.VISIBLE);
+
+            idAnimal.setFocusable(false);
+            idAnimal.setEnabled(false);
+            btnLocalizar.setEnabled(false);
+
+
+
+            checkAnimalExists(animalAux);
+        } else {
+            Toast.makeText(this,"ID not defined",Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    private void checkAnimalExists(String animalID) {
+
+        String url = urlInicial + "animalExists/"+animalID;
+        // prepare the Request
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // display response
+                        try {
+                            successCheckAnimalExists(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("ERROR|CheckAnimal",error.toString());
+                    }
+                }
+        );
+        MySingleton.getInstance(this).addToRequestQeueu(getRequest);
+    }
+
+    private void successCheckAnimalExists (JSONObject response) throws JSONException {
+        String result = response.getString("exists");
+        Boolean auxResult;
+
+        if (result.equalsIgnoreCase("true") || result.equalsIgnoreCase("false")) {
+            auxResult = Boolean.valueOf(result);
+
+            if (auxResult) {
+                animalChecked();
+            } else {
+                idAnimal.setFocusable(true);
+                idAnimal.setEnabled(true);
+                tvMsg.setText("Animal not Found");
+                btnLocalizar.setEnabled(true);
+            }
+        }
+
+    }
+
+    private void animalChecked() {
+        tvMsg.setText("Animal Found, sending coordinates");
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}, 10);
+            }
+        }
+
+        locationManager.requestLocationUpdates("gps", 5000, 0, listener);
+    }
+
+
+    public void botaoStop(View v) {
+        locationManager.removeUpdates(listener);
+        //locationManager = null;
+
+        idAnimal.setFocusable(true);
+        idAnimal.setEnabled(true);
+        tvMsg.setText("Animal not Found");
+        btnLocalizar.setEnabled(true);
+        tvMsg.setVisibility(View.INVISIBLE);
+    }
+
     void configure_button() {
         // first check for permissions
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
@@ -138,18 +245,7 @@ public class MainActivity extends AppCompatActivity {
                                 Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}
                         , 10);
             }
-            return;
         }
-        // this code won'textView execute IF permissions are not allowed, because in the line above there is return statement.
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //noinspection MissingPermission
-                locationManager.requestLocationUpdates("gps", 5000, 0, listener);
-                Log.d("Botao", "onClick: Entrei");
-            }
-        });
     }
-
 }
 
