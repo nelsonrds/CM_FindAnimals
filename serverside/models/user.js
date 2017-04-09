@@ -3,7 +3,7 @@
  * @Date:   2017-04-09T17:50:44+01:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-09T18:26:57+01:00
+ * @Last modified time: 2017-04-09T18:51:33+01:00
  */
 
 var mongoose = require('mongoose');
@@ -24,6 +24,10 @@ var usersSchema = mongoose.Schema({
         required: true
     },
     address: {
+        type: String,
+        required: true,
+    },
+    email: {
         type: String,
         required: true,
     },
