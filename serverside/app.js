@@ -1,9 +1,20 @@
+/**
+ * @Author: Helder Ferreira
+ * @Date:   2017-03-23T15:08:08+00:00
+ * @Email:  helderferreira_@outlook.pt
+ * @Last modified by:   Helder Ferreira
+ * @Last modified time: 2017-04-09T22:57:08+01:00
+ */
+
+
+
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 Animals = require('./models/animals');
+User = require('./models/user');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -27,7 +38,6 @@ app.use(function (req, res, next) {
 
     // Pass to next layer of middleware
     next();
-    console.log("Entrei no Access-Control-Allow-Credentials");
 });
 
 //Connect to mogoose
@@ -39,12 +49,10 @@ app.get('/',function (req, res) {
     res.send('Hello World!')
 });
 
-app.get('/test',function (req, res) {
-    result = {
-        'result':'OK'
-    };
-    res.json(result);
-})
+
+//#################################
+//### Animals
+//#################################
 
 app.get('/api/animals',function (req, res) {
     Animals.getAnimals(function (err, animals) {
@@ -105,6 +113,44 @@ app.put('/api/updateAnimalLocation/:_id', function(req, res) {
         res.json(animal);
     })
 });
+
+
+//#################################
+//### Users
+//#################################
+
+app.post('/api/addUser', function(req, res) {
+    console.log("Entrei no addUser");
+    var user = req.body;
+    User.addUser(user, function(err, user) {
+        if (err) {
+            throw err;
+        }
+        res.json(user);
+    });
+});
+
+app.post('/api/loginCheck', function(req, res) {
+    var user = req.body.user;
+    var pass = req.body.password;
+
+    User.loginCheck(user,pass,function(obj) {
+        if (obj != null) {
+            result = {
+                'result':'OK',
+                'user': obj
+            };
+            res.json(result);
+        } else {
+            result = {
+                'result':'FAIL'
+            };
+            res.json(result);
+        }
+    });
+})
+
+
 
 
 app.listen(3000);

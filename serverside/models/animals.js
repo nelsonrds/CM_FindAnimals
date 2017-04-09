@@ -1,6 +1,12 @@
 /**
- * Created by helder on 22/03/2017.
+ * @Author: Helder Ferreira
+ * @Date:   2017-03-23T15:08:08+00:00
+ * @Email:  helderferreira_@outlook.pt
+ * @Last modified by:   Helder Ferreira
+ * @Last modified time: 2017-04-09T18:26:08+01:00
  */
+
+
 
 var mongoose = require('mongoose');
 
@@ -39,10 +45,6 @@ module.exports.getAnimalByID = function (id, callback) {
 };
 
 //Add Animal
-
-module.exports.addAnimal = (animal, callback) => {
-	Animals.create(animal, callback);
-}
 
 module.exports.addAnimal = function (animal, callback) {
     Animals.create(animal, callback);
