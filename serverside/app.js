@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-09T18:45:57+01:00
+ * @Last modified time: 2017-04-09T22:57:08+01:00
  */
 
 
@@ -129,6 +129,26 @@ app.post('/api/addUser', function(req, res) {
         res.json(user);
     });
 });
+
+app.post('/api/loginCheck', function(req, res) {
+    var user = req.body.user;
+    var pass = req.body.password;
+
+    User.loginCheck(user,pass,function(obj) {
+        if (obj != null) {
+            result = {
+                'result':'OK',
+                'user': obj
+            };
+            res.json(result);
+        } else {
+            result = {
+                'result':'FAIL'
+            };
+            res.json(result);
+        }
+    });
+})
 
 
 

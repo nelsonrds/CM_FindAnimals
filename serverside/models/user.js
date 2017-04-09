@@ -3,7 +3,7 @@
  * @Date:   2017-04-09T17:50:44+01:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-09T18:51:33+01:00
+ * @Last modified time: 2017-04-09T22:50:38+01:00
  */
 
 var mongoose = require('mongoose');
@@ -41,4 +41,14 @@ var User = module.exports = mongoose.model('User',usersSchema);
 
 module.exports.addUser = function (user, callback) {
     User.create(user,callback);
+}
+
+module.exports.loginCheck = function (user, pass, callback) {
+    User.findOne({user:user}, function(error, object) {
+        if (object.password==pass) {
+            callback(object);
+        } else {
+            callback(null);
+        }
+    });
 }
