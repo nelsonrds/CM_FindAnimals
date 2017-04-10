@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-10T01:10:23+01:00
+ * @Last modified time: 2017-04-10T02:19:28+01:00
  */
 
 
@@ -128,21 +128,31 @@ app.post('/api/loginCheck', function(req, res) {
     var user = req.body.user;
     var pass = req.body.password;
 
-    User.loginCheck(user,pass,function(obj) {
-        if (obj != null) {
-            result = {
-                'result':'OK',
-                'user': obj
-            };
-            res.json(result);
-        } else {
-            result = {
-                'result':'FAIL'
-            };
-            res.json(result);
-        }
-    });
-})
+    if (user == null || pass == null) {
+
+        result = {
+            'result':'User or Password not Defined'
+        };
+        res.json(result);
+
+    } else {
+
+        User.loginCheck(user,pass,function(obj) {
+            if (obj != null) {
+                result = {
+                    'result':'OK',
+                    'user': obj
+                };
+                res.json(result);
+            } else {
+                result = {
+                    'result':'FAIL'
+                };
+                res.json(result);
+            }
+        });
+    }
+});
 
 app.get('/api/users',function (req, res) {
     User.getUsers(function (err, users) {
