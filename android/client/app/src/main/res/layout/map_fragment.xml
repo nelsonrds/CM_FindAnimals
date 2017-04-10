@@ -14,7 +14,6 @@
 
 
     <ImageButton
-        android:onClick="cancelPoly"
         android:id="@+id/btclear"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"

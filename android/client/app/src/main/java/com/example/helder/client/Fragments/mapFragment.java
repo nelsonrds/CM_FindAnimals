@@ -17,7 +17,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.example.helder.client.DataBase.Fence;
 import com.example.helder.client.R;
+import com.example.helder.client.WebServices.Singleton;
 import com.google.android.gms.drive.internal.StringListResponse;
 import com.google.android.gms.fitness.data.Value;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,14 +32,23 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.helder.client.MainActivity;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
-import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.example.helder.client.MainActivity.UserID;
 import static com.google.android.gms.wearable.DataMap.TAG;
 
 /**
@@ -48,6 +63,12 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
     ImageButton btcheck;
 
     ArrayList<LatLng> dots;
+
+    Boolean checkIfNew;
+    Boolean existFence;
+
+    Circle circle;
+    ArrayList<Circle> cir;
 
     public mapFragment() {
     }
@@ -83,6 +104,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "Limpar", Toast.LENGTH_SHORT).show();
+                pontos.clear();
             }
         });
 
@@ -92,6 +114,20 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "Aceitar", Toast.LENGTH_SHORT).show();
+                btclear.setVisibility(View.GONE);
+                btcheck.setVisibility(View.GONE);
+                checkIfNew = false;
+                sendFenceWS();
+                Toast.makeText(getContext(),pontos.toString(), Toast.LENGTH_LONG).show();
+                PolygonOptions polyOp = new PolygonOptions();
+                polyOp.addAll(pontos);
+                polyOp.strokeColor(Color.RED);
+                polyOp.fillColor(Color.TRANSPARENT);
+                nMap.addPolygon(polyOp);
+                pontos.clear();
+                for(int i = 0; i < cir.size() ; i++){
+                    cir.get(i).remove();
+                }
             }
         });
 
@@ -104,16 +140,11 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
 
         dots = new ArrayList<>();
 
-        LatLng novo = new LatLng(41.69430348, -8.84685147);
-        LatLng novo2 = new LatLng(41.69430348, -8.84685147);
-        LatLng novo3 = new LatLng(41.69430883, -8.84684781);
-        LatLng novo4 = new LatLng(41.69431187, -8.84684867);
+        cir = new ArrayList<>();
 
-        dots.add(novo);
-        dots.add(novo2);
-        dots.add(novo3);
-        dots.add(novo4);
+        checkIfNew = false;
 
+        existFence = false;
 
         return view;
     }
@@ -123,16 +154,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
         // mapa
         nMap = googleMap;
 
-        nMap.addMarker(new MarkerOptions()
-                .position(new LatLng(41.1, -8.2))
-                .title("Marker"));
-        //Toast.makeText(, "onMapReady", Toast.LENGTH_SHORT).show();
-
-        for(int i = 0 ; i < 4; i ++){
-            nMap.addMarker(new MarkerOptions().position(dots.get(i)));
-        }
-
-        LatLng ltn = new LatLng(41.6, -8.84);
+        LatLng ltn = new LatLng(41.69621, -8.8430194);
 
         CameraPosition cm = new CameraPosition.Builder()
                 .zoom(15)
@@ -149,30 +171,88 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
 
     @Override
     public void onMapClick(LatLng latLng) {
-
-        nMap.addMarker(new MarkerOptions().position(latLng));
-
-        //Botoes
-        btclear.setVisibility(View.VISIBLE);
-        btcheck.setVisibility(View.VISIBLE);
+        if(!existFence){
+            if(checkIfNew){
+                pontos.add(latLng);
+                circle = nMap.addCircle(new CircleOptions()
+                        .center(new LatLng(latLng.latitude, latLng.longitude))
+                        .radius(10)
+                        .strokeColor(Color.RED)
+                        .fillColor(Color.BLUE));
+                cir.add(circle);
+            }
+        }
     }
 
     @Override
     public void onMapLongClick(LatLng latLng) {
-        pontos.add(latLng);
-        nMap.addMarker(new MarkerOptions().position(latLng));
-        if(pontos.size() == 4){
-            PolygonOptions polyOp = new PolygonOptions();
-            polyOp.addAll(pontos);
-            polyOp.strokeColor(Color.RED);
-            polyOp.fillColor(Color.TRANSPARENT);
-            nMap.addPolygon(polyOp);
-            pontos = new ArrayList<>();
+        if(!existFence){
+            checkIfNew = true;
+            pontos.add(latLng);
+            btclear.setVisibility(View.VISIBLE);
+            btcheck.setVisibility(View.VISIBLE);
+            circle = nMap.addCircle(new CircleOptions()
+                    .center(new LatLng(latLng.latitude, latLng.longitude))
+                    .radius(10)
+                    .strokeColor(Color.RED)
+                    .fillColor(Color.BLUE));
+            cir.add(circle);
         }
     }
 
-    public void cancelPoly(View view){
+    private void getFenceWS(){
+        Fence fence = new Fence();
 
+    }
+
+    private void sendFenceWS(){
+        String url = "http://c87b3c26.ngrok.io/api/user/addFence";
+        StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+
+                    }
+                }
+        ) {
+
+            @Override
+            protected Map<String, String> getParams()
+            {
+
+                JSONArray jsonObjectMembers = new JSONArray();
+                for (int i = 0; i < pontos.size(); i++) {
+                    try {
+                        JSONObject jo = new JSONObject();
+                        jo.put("latitude", String.valueOf(pontos.get(i).latitude));
+                        jo.put("longitude", String.valueOf(pontos.get(i).longitude));
+
+                        jsonObjectMembers.put(jo.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("idUser", UserID);
+                params.put("Coordenadas", jsonObjectMembers.toString());
+
+                return params;
+            }
+
+        };
+
+        Singleton.getInstance(getContext()).addToRequestQeueu(putRequest);
     }
 
 }

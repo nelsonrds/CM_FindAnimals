@@ -3,7 +3,7 @@
     <string name="section_format">Hello World from section: %1$d</string>
 
     <!-- MENU STRINGS -->
-    <string name="action_settings">Settings</string>
+    <string name="action_newzone">New fence</string>
     <string name="action_info">Info</string>
 
     <!-- FRAGMENTOS -->

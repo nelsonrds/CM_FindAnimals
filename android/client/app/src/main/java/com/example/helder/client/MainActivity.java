@@ -2,6 +2,7 @@ package com.example.helder.client;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +23,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +39,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends AppCompatActivity{
-
+    public static String UserID;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -52,6 +55,8 @@ public class MainActivity extends AppCompatActivity{
      */
     private ViewPager mViewPager;
 
+    ImageButton btacept;
+    ImageButton btclear;
 
 
     @Override
@@ -73,7 +78,8 @@ public class MainActivity extends AppCompatActivity{
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        String id = getIntent().getExtras().getString(Utils.param_Userid);
+        UserID = getIntent().getExtras().getString(Utils.param_Userid);
+
 
     }
 
@@ -87,10 +93,8 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
-            case R.id.action_settings:
-                Intent ii = new Intent(this, LoginActivity.class);
-                startActivity(ii);
-                Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
+            case R.id.action_newzone:
+
                 return true;
             case R.id.action_info:
                 Intent i = new Intent(this, InforActivity.class);

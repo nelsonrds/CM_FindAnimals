@@ -4,9 +4,9 @@
     tools:context="com.example.helder.client.MainActivity">
     <group android:id="@+id/grpSort2">
         <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_newzone"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/action_newzone"
         app:showAsAction="never" />
         <item
             android:icon="@drawable/ic_map"
@@ -14,15 +14,5 @@
             android:orderInCategory="100"
             android:title="@string/action_info"
             app:showAsAction="never" />
-    </group>
-
-    <group android:id="@+id/grpSort">
-        <item
-                android:id="@+id/newZone"
-                android:title="new zone"/>
-        <item
-            android:id="@+id/newZone2"
-            android:title="new zone2"/>
-
     </group>
 </menu>
