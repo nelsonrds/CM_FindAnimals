@@ -6,4 +6,7 @@ package com.example.helder.client;
 
 public class Utils {
     public static final String param_dados = "Error: ";
+
+
+    public static final String param_Userid = "userID";
 }
