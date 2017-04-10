@@ -22,6 +22,7 @@ import com.example.helder.client.DataBase.Location;
 import com.example.helder.client.R;
 import com.example.helder.client.Utils;
 import com.example.helder.client.WebServices.Singleton;
+import com.google.android.gms.maps.MapView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,8 +56,9 @@ public class animalFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.animal_fragment, container, false);
 
-        if(view != null){
+        /*if(view != null){
             ViewGroup parent = (ViewGroup) view.getParent();
             if (parent != null)
                 parent.removeView(view);
@@ -64,8 +66,8 @@ public class animalFragment extends android.support.v4.app.Fragment {
         try {
             view = inflater.inflate(R.layout.animal_fragment, container, false);
         } catch (InflateException e) {
-            /* map is already there, just return view as it is */
-        }
+             //map is already there, just return view as it is
+        }*/
 
         lista = new ArrayList<>();
 
@@ -83,7 +85,7 @@ public class animalFragment extends android.support.v4.app.Fragment {
     private void getAnimalsWS(){
         final String url = "http://eurogather.net:3000/api/animals";
 
-        Toast.makeText(getContext(), "getting data...", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), "getting data...", Toast.LENGTH_SHORT).show();
 
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override

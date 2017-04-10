@@ -48,44 +48,45 @@ public class LoginActivity extends AppCompatActivity {
 
         editUsername = (EditText)findViewById(R.id.edit_username);
         editPassword = (EditText)findViewById(R.id.edit_password);
+
     }
 
     public void Enter(View v){
-        Toast.makeText(this, "Funcou!", Toast.LENGTH_SHORT).show();
-
-        if(true){
-            verifyLogin();
-            Intent i = new Intent(this, MainActivity.class);
-            i.putExtra(Utils.param_Userid, userID);
-            startActivity(i);
-        }else{
-            Toast.makeText(this, "erro!", Toast.LENGTH_LONG).show();
-        }
+        verifyLogin();
     }
 
 
     private void verifyLogin(){
         final String url = "http://eurogather.net:3000/api/loginCheck";
-        final String user = editUsername.getText().toString().trim();
+        //final String user = editUsername.getText().toString().trim();
         //final String password = editPassword.getText().toString().trim();
+        final String user = "helder";
         final String password = "b74e86682b5e0b2a3b53a8816cdfe217b74fccc1";
 
-            Map<String,String> params = new HashMap<String, String>();
-            params.put(KEY_USERNAME, user);
-            params.put(KEY_PASSWORD, password);
 
+        Map<String,String> params = new HashMap<String, String>();
+        params.put(KEY_USERNAME, user);
+        params.put(KEY_PASSWORD, password);
 
         JsonObjectRequest getRequest = new JsonObjectRequest(url, new JSONObject(params) ,new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 // display response
                 try{
-                    //Toast.makeText(LoginActivity.this, response.toString(), Toast.LENGTH_LONG).show();
-                    JSONObject jobj= response.getJSONObject("user");
 
-                    final String s1 = jobj.getString("_id");
+                    String result = response.getString("result");
+                    if(result.equals("OK")){
+                        JSONObject jobj= response.getJSONObject("user");
 
-                    userID = s1;
+                        userID = jobj.getString("_id");
+
+                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                        i.putExtra(Utils.param_Userid, userID);
+                        startActivity(i);
+
+                    }else{
+                        Toast.makeText(LoginActivity.this, "Login Inválido", Toast.LENGTH_LONG).show();
+                    }
 
                 }catch(Exception ex){
 
@@ -98,7 +99,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         Singleton.getInstance(this).addToRequestQeueu(getRequest);
-
     }
 
 }
