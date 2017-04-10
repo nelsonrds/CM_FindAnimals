@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-09T22:57:08+01:00
+ * @Last modified time: 2017-04-10T02:19:28+01:00
  */
 
 
@@ -75,9 +75,6 @@ app.get('/api/animals/:_id', function (req, res) {
 app.get('/api/animalExists/:_id', function (req, res) {
     result = {'exists':'true'};
     Animals.getAnimalByID(req.params._id, function(err, animals) {
-        console.log("id "+ req.params._id);
-        console.log("erro "+ err);
-        //console.log("callback "+animals.length);
         if (err) {
             result = {'exists':'false'};
         } else {
@@ -102,8 +99,6 @@ app.put('/api/updateAnimalLocation/:_id', function(req, res) {
     var location = req.body;
     location["_id"] = mongoose.Types.ObjectId();
     location['treated'] = 'false';
-    console.log(location);
-    console.log("Entrei");
 
 
     Animals.addAnimalLocation(idRecebido,{$push: {"location": location}}, function(err, animal) {
@@ -120,7 +115,6 @@ app.put('/api/updateAnimalLocation/:_id', function(req, res) {
 //#################################
 
 app.post('/api/addUser', function(req, res) {
-    console.log("Entrei no addUser");
     var user = req.body;
     User.addUser(user, function(err, user) {
         if (err) {
@@ -134,23 +128,40 @@ app.post('/api/loginCheck', function(req, res) {
     var user = req.body.user;
     var pass = req.body.password;
 
-    User.loginCheck(user,pass,function(obj) {
-        if (obj != null) {
-            result = {
-                'result':'OK',
-                'user': obj
-            };
-            res.json(result);
-        } else {
-            result = {
-                'result':'FAIL'
-            };
-            res.json(result);
+    if (user == null || pass == null) {
+
+        result = {
+            'result':'User or Password not Defined'
+        };
+        res.json(result);
+
+    } else {
+
+        User.loginCheck(user,pass,function(obj) {
+            if (obj != null) {
+                result = {
+                    'result':'OK',
+                    'user': obj
+                };
+                res.json(result);
+            } else {
+                result = {
+                    'result':'FAIL'
+                };
+                res.json(result);
+            }
+        });
+    }
+});
+
+app.get('/api/users',function (req, res) {
+    User.getUsers(function (err, users) {
+        if (err) {
+            throw err;
         }
-    });
-})
-
-
+        res.json(users);
+    })
+});
 
 
 app.listen(3000);
