@@ -1,43 +1,30 @@
 package com.example.helder.client.Fragments;
 
-import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.example.helder.client.DataBase.Fence;
 import com.example.helder.client.R;
 import com.example.helder.client.WebServices.Singleton;
-import com.google.android.gms.drive.internal.StringListResponse;
-import com.google.android.gms.fitness.data.Value;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.example.helder.client.MainActivity;
-import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 
 import org.json.JSONArray;
@@ -49,7 +36,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.helder.client.MainActivity.UserID;
-import static com.google.android.gms.wearable.DataMap.TAG;
 
 /**
  * Created by Nelson on 24/03/2017.
@@ -206,19 +192,59 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
     }
 
     private void getFenceWS(){
-        Fence fence = new Fence();
+        String url = "";
+
+//        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, )
+    }
+
+    private void getFenceLocal(){
 
     }
 
     private void sendFenceWS(){
-        String url = "http://c87b3c26.ngrok.io/api/user/addFence";
-        StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
-                new Response.Listener<String>()
+        String url = "http://d3167cc6.ngrok.io/api/user/addFence";
+
+        JSONArray jsonObjectMembers = new JSONArray();
+        for (int i = 0; i < pontos.size(); i++) {
+            try {
+                JSONObject jo = new JSONObject();
+                jo.put("latitude", String.valueOf(pontos.get(i).latitude));
+                jo.put("longitude", String.valueOf(pontos.get(i).longitude));
+
+                jsonObjectMembers.put(jo);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        JSONArray jsonObjectMembers2 = new JSONArray();
+        for (int i = 0; i < pontos.size(); i++) {
+            try {
+                JSONObject jo2 = new JSONObject();
+                jo2.put(String.valueOf(pontos.get(i).latitude), String.valueOf(pontos.get(i).longitude));
+                jsonObjectMembers2.put(jo2);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        JSONObject JO = new JSONObject();
+        try{
+            JO.put("idUser", UserID);
+            JO.put("coordenadas", jsonObjectMembers);
+            JO.put("coordenadasXY", jsonObjectMembers2);
+        }catch(Exception io){
+
+        }
+
+
+        JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.POST, url, JO,
+                new Response.Listener<JSONObject>()
                 {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONObject response) {
                         // response
-                        Log.d("Response", response);
+                        Log.d("Response", response.toString());
                     }
                 },
                 new Response.ErrorListener()
@@ -229,7 +255,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
 
                     }
                 }
-        ) {
+        );/*{
 
             @Override
             protected Map<String, String> getParams()
@@ -264,11 +290,20 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
                 params.put("coordenadas", jsonObjectMembers.toString());
                 params.put("coordenadasXY", jsonObjectMembers2.toString());
 
+                JSONObject JO = new JSONObject();
+                try{
+                    JO.put("idUser", UserID);
+                    JO.put("coordenadas", jsonObjectMembers);
+                    JO.put("coordenadasXY", jsonObjectMembers2);
+                }catch(Exception io){
+
+                }
+
+
+
                 return params;
             }
-
-        };
-
+        };*/
         Singleton.getInstance(getContext()).addToRequestQeueu(putRequest);
     }
 
