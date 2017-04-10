@@ -105,6 +105,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
             public void onClick(View v) {
                 Toast.makeText(getContext(), "Limpar", Toast.LENGTH_SHORT).show();
                 pontos.clear();
+
             }
         });
 
@@ -145,6 +146,9 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
         checkIfNew = false;
 
         existFence = false;
+
+
+
 
         return view;
     }
@@ -237,7 +241,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
                         jo.put("latitude", String.valueOf(pontos.get(i).latitude));
                         jo.put("longitude", String.valueOf(pontos.get(i).longitude));
 
-                        jsonObjectMembers.put(jo.toString());
+                        jsonObjectMembers.put(jo);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -245,7 +249,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
 
                 Map<String, String>  params = new HashMap<String, String>();
                 params.put("idUser", UserID);
-                params.put("Coordenadas", jsonObjectMembers.toString());
+                params.put("coordenadas", jsonObjectMembers.toString());
 
                 return params;
             }
