@@ -3,7 +3,7 @@
  * @Date:   2017-04-09T17:50:44+01:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-09T22:50:38+01:00
+ * @Last modified time: 2017-04-10T01:01:29+01:00
  */
 
 var mongoose = require('mongoose');
@@ -52,3 +52,7 @@ module.exports.loginCheck = function (user, pass, callback) {
         }
     });
 }
+
+module.exports.getUsers = function (callback, limit) {
+    User.find(callback).limit(limit);
+};
