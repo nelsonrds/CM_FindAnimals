@@ -2,6 +2,7 @@ package com.example.helder.client;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -33,6 +34,8 @@ import com.example.helder.client.Fragments.mapFragment;
 import com.example.helder.client.Fragments.routeFragment;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.example.helder.client.DataBase.DB;
+import com.example.helder.client.DataBase.Contrato;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -40,6 +43,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends AppCompatActivity{
     public static String UserID;
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -57,6 +61,9 @@ public class MainActivity extends AppCompatActivity{
 
     ImageButton btacept;
     ImageButton btclear;
+
+    DB mDBHelper;
+    SQLiteDatabase db;
 
 
     @Override
@@ -80,6 +87,8 @@ public class MainActivity extends AppCompatActivity{
 
         UserID = getIntent().getExtras().getString(Utils.param_Userid);
 
+        mDBHelper = new DB(this);
+        db = mDBHelper.getReadableDatabase();
 
     }
 
@@ -94,7 +103,6 @@ public class MainActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_newzone:
-
                 return true;
             case R.id.action_info:
                 Intent i = new Intent(this, InforActivity.class);

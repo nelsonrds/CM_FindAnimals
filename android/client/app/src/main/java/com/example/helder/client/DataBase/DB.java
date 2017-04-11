@@ -9,8 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class DB extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 3;
-    public static final String DATABASE_NAME = ".db";
+    public static final int DATABASE_VERSION = 2;
+    public static final String DATABASE_NAME = "Animals.db";
 
     public DB(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -18,12 +18,21 @@ public class DB extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase db){
+        db.execSQL(Contrato.Fence.SQL_CREATES_FENCE);
+        db.execSQL(Contrato.Coordenadas.SQL_CREATES_COORDENADAS);
+        db.execSQL(Contrato.FenceCoordenadas.SQL_CREATES_FENCECOORDENADAS);
+        db.execSQL(Contrato.User.SQL_CREATES_USER);
+
+        db.execSQL("insert into " + Contrato.Fence.TABLE_NAME + " values (1);");
+        db.execSQL("insert into " + Contrato.User.TABLE_NAME + " values (1, 'Nelson Rodrigues', 'nelson', 'nelson', '123', 1);");
 
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
-        //db.execSQL(Contrato.Entidade.SQL_DROP_ENTITIES);
-        //db.execSQL(Contrato.Cidade.SQL_DROP_ENTITIES);
+        db.execSQL(Contrato.User.SQL_DROP_USER);
+        db.execSQL(Contrato.FenceCoordenadas.SQL_DROP_FENCECOORDENADAS);
+        db.execSQL(Contrato.Fence.SQL_DROP_FENCE);
+        db.execSQL(Contrato.Coordenadas.SQL_DROP_COORDENADAS);
         onCreate(db);
     }
 

@@ -1,6 +1,11 @@
 package com.example.helder.client;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +21,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.helder.client.Adapter.MyAnimalListAdapter;
 import com.example.helder.client.DataBase.Animal;
+import com.example.helder.client.DataBase.Contrato;
+import com.example.helder.client.DataBase.DB;
 import com.example.helder.client.DataBase.Location;
 import com.example.helder.client.WebServices.Singleton;
 import com.google.firebase.auth.UserInfo;
@@ -39,6 +46,10 @@ public class LoginActivity extends AppCompatActivity {
     public static final String KEY_PASSWORD = "password";
 
 
+    DB mDBHelper;
+    SQLiteDatabase db;
+    Cursor c;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,10 +60,30 @@ public class LoginActivity extends AppCompatActivity {
         editUsername = (EditText)findViewById(R.id.edit_username);
         editPassword = (EditText)findViewById(R.id.edit_password);
 
+        mDBHelper = new DB(this);
+        db = mDBHelper.getReadableDatabase();
+
+
     }
 
     public void Enter(View v){
-        verifyLogin();
+        //com net
+        //verifyLogin();
+        //sem net
+
+        if(isNetworkAvailable()){
+            verifyLogin();
+            Toast.makeText(this,"entrou! e tem net",Toast.LENGTH_SHORT).show();
+        }else{
+            if(verifyLoginLocal()){
+                Toast.makeText(this,"entrou! e nao tem net",Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                i.putExtra(Utils.param_Userid, userID);
+                startActivity(i);
+            }else{
+                Toast.makeText(this,"nao entrou!",Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 
@@ -101,4 +132,31 @@ public class LoginActivity extends AppCompatActivity {
         Singleton.getInstance(this).addToRequestQeueu(getRequest);
     }
 
+
+    private Boolean verifyLoginLocal(){
+        String sql = "Select " +
+                Contrato.User.COLUMN_USERNAME + ", " +
+                Contrato.User.COLUMN_ID +
+                " FROM " + Contrato.User.TABLE_NAME +
+                " WHERE " + Contrato.User.TABLE_NAME + "."
+                + Contrato.User.COLUMN_USERNAME + " = '" + editUsername.getText().toString() + "'" +
+                " AND " + Contrato.User.TABLE_NAME + "."
+                + Contrato.User.COLUMN_PASSWORD + " = '" + editPassword.getText().toString() + "'";
+
+        c = db.rawQuery(sql, null);
+
+        if(c.getCount() == 0){
+            return false;
+        }else{
+            Toast.makeText(this, c.getColumnName(1) + "", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }
