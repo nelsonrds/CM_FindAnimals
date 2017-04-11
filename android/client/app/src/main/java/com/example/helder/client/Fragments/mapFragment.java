@@ -16,6 +16,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.helder.client.R;
+import com.example.helder.client.Utils;
 import com.example.helder.client.WebServices.Singleton;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -202,7 +203,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
     }
 
     private void sendFenceWS(){
-        String url = "http://d3167cc6.ngrok.io/api/user/addFence";
+        String url = Utils.URL_PRINCIPAL + "/api/user/addFence";
 
         JSONArray jsonObjectMembers = new JSONArray();
         for (int i = 0; i < pontos.size(); i++) {
