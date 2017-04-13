@@ -3,7 +3,7 @@
  * @Date:   2017-04-09T17:50:44+01:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-10T13:48:01+01:00
+ * @Last modified time: 2017-04-13T20:20:40+01:00
  */
 
 var mongoose = require('mongoose');
@@ -34,7 +34,9 @@ var usersSchema = mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
-    }
+    },
+    location: [{}],
+    locationInCoordinates: [{}]
 });
 
 var User = module.exports = mongoose.model('User',usersSchema);
@@ -59,4 +61,14 @@ module.exports.loginCheck = function (user, pass, callback) {
 
 module.exports.getUsers = function (callback, limit) {
     User.find(callback).limit(limit);
+};
+
+module.exports.addUserFence = function (id,locals,callback) {
+    User.findByIdAndUpdate(id, locals, {safe: true, upsert: true, new : true, strict: false},function(err, user) {
+        callback(err,user);
+    });
+};
+
+module.exports.getUserByID = function(id, callback) {
+    User.findById(id,callback);
 };

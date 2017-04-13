@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-13T16:11:05+01:00
+ * @Last modified time: 2017-04-13T22:10:34+01:00
  */
 
 
@@ -12,6 +12,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var GeoJSON = require('geojson');
 
 Animals = require('./models/animals');
 User = require('./models/user');
@@ -189,14 +190,29 @@ app.post('/api/user/addFence', function(req, res) {
     res.json({result:"true"});
 });
 
-function returnPares(coordenada) {
+app.get('/api/getFence/:_id', function (req, res) {
+    idRecebido = req.params._id;
+    User.getUserByID(idRecebido,function(err, user) {
+        var resultadoChamada = {};
 
-    var arr = {};
-    arr.latitude = coordenada.latitude;
-    arr.longitude = coordenada.longitude;
-    console.log(JSON.stringify(arr));
-    return arr;
-}
+        if (err) {
+            console.log("Entrei1");
+            resultadoChamada["status"] = "idNotFound";
+        } else {
+            console.log("Entrei2");
+            resultadoChamada["status"] = "clear";
+        }
+
+        data = user.locationInCoordinates[0];
+        if (data!=undefined) {
+            resultadoChamada["status"] = "ok";
+            resultadoChamada["coordenadas"] = data;
+        }
+
+        res.json(resultadoChamada);
+
+    });
+});
 
 app.listen(3000);
 
