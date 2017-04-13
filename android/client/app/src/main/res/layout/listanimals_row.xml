@@ -17,12 +17,4 @@
         android:id="@+id/animalName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    <TextView
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
-        android:text="Owner"
-        android:id="@+id/ownerAnimal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
 </LinearLayout>

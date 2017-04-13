@@ -82,6 +82,8 @@ public class animalFragment extends android.support.v4.app.Fragment {
         return view;
     }
 
+
+
     private void getAnimalsWS(){
         final String url = "http://eurogather.net:3000/api/animals";
 
@@ -119,6 +121,14 @@ public class animalFragment extends android.support.v4.app.Fragment {
                     adapter = new MyAnimalListAdapter(getContext(), lista);
 
                     lv.setAdapter(adapter);
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Animal animal = (Animal)parent.getItemAtPosition(position);
+                            Toast.makeText(getContext(), animal.getAnimalName(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }catch(JSONException ex){
 
                 }

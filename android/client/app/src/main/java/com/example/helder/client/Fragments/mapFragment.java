@@ -1,10 +1,14 @@
 package com.example.helder.client.Fragments;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -15,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.example.helder.client.InforActivity;
 import com.example.helder.client.R;
 import com.example.helder.client.Utils;
 import com.example.helder.client.WebServices.Singleton;
@@ -55,6 +60,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
     Boolean existFence;
 
     Circle circle;
+    PolygonOptions polyOp;
     ArrayList<Circle> cir;
 
     public mapFragment() {
@@ -83,7 +89,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
         } catch (InflateException e) {
             /* map is already there, just return view as it is */
         }
-
+        setHasOptionsMenu(true);
         //Botoes
         btclear = (ImageButton)view.findViewById(R.id.btclear);
         btclear.setVisibility(View.GONE);
@@ -92,7 +98,6 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
             public void onClick(View v) {
                 Toast.makeText(getContext(), "Limpar", Toast.LENGTH_SHORT).show();
                 pontos.clear();
-
 
             }
         });
@@ -108,15 +113,17 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
                 checkIfNew = false;
                 sendFenceWS();
                 Toast.makeText(getContext(),pontos.toString(), Toast.LENGTH_LONG).show();
-                PolygonOptions polyOp = new PolygonOptions();
+
                 polyOp.addAll(pontos);
                 polyOp.strokeColor(Color.RED);
                 polyOp.fillColor(Color.TRANSPARENT);
                 nMap.addPolygon(polyOp);
+
                 pontos.clear();
                 for(int i = 0; i < cir.size() ; i++){
                     cir.get(i).remove();
                 }
+                existFence = true;
             }
         });
 
@@ -124,6 +131,8 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
 
         SupportMapFragment mMap = ((SupportMapFragment)getChildFragmentManager().findFragmentById(R.id.mapa));
         mMap.getMapAsync(this);
+
+        polyOp = new PolygonOptions();
 
         pontos = new ArrayList<>();
 
@@ -135,10 +144,26 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
 
         existFence = false;
 
-
-
-
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_mapfragment, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.action_deletefence:
+                if(existFence){
+                    nMap.clear();
+                    existFence = false;
+                }
+                return true;
+            default: return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

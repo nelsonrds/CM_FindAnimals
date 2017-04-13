@@ -15,11 +15,7 @@ public class InforActivity extends AppCompatActivity {
         setContentView(R.layout.activity_infor);
 
 
-        if(isNetworkAvailable()){
-            Toast.makeText(this, "yes", Toast.LENGTH_LONG).show();
-        }else{
-            Toast.makeText(this, "no", Toast.LENGTH_LONG).show();
-        }
+
     }
 
     private boolean isNetworkAvailable() {
