@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-10T13:49:16+01:00
+ * @Last modified time: 2017-04-13T16:11:05+01:00
  */
 
 
@@ -163,6 +163,40 @@ app.get('/api/users',function (req, res) {
     })
 });
 
+app.post('/api/user/addFence', function(req, res) {
+    console.log("\n");
+    id = req.body.idUser;
+    coordenadas = req.body.coordenadas;
+
+    const geometry = [coordenadas.map(result => [result.latitude, result.longitude])]
+    const finalObject = {
+        type: 'Polygon',
+        geometry
+    }
+
+
+    User.addUserFence(id,{$push: {"location": finalObject}}, function(err, user) {
+        if (err) {
+            throw err;
+        }
+    });
+
+    User.addUserFence(id,{$push: {"locationInCoordinates": coordenadas}}, function(err, user) {
+        if (err) {
+            throw err;
+        }
+    });
+    res.json({result:"true"});
+});
+
+function returnPares(coordenada) {
+
+    var arr = {};
+    arr.latitude = coordenada.latitude;
+    arr.longitude = coordenada.longitude;
+    console.log(JSON.stringify(arr));
+    return arr;
+}
 
 app.listen(3000);
 
