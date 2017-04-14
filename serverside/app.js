@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-13T22:10:34+01:00
+ * @Last modified time: 2017-04-14T15:00:50+01:00
  */
 
 
@@ -196,14 +196,12 @@ app.get('/api/getFence/:_id', function (req, res) {
         var resultadoChamada = {};
 
         if (err) {
-            console.log("Entrei1");
             resultadoChamada["status"] = "idNotFound";
         } else {
-            console.log("Entrei2");
             resultadoChamada["status"] = "clear";
         }
 
-        data = user.locationInCoordinates[0];
+        data = user.locationInCoordinates[(user.locationInCoordinates.length-1)];
         if (data!=undefined) {
             resultadoChamada["status"] = "ok";
             resultadoChamada["coordenadas"] = data;
@@ -213,6 +211,70 @@ app.get('/api/getFence/:_id', function (req, res) {
 
     });
 });
+
+app.post('/api/addAnimalToUser',function(req,res) {
+    idUser = req.body.idUser;
+    idAnimal = req.body.idAnimal;
+    console.log(idUser);
+    console.log(idAnimal);
+
+    var animalToAdd = {};
+    animalToAdd["id"] = idAnimal;
+
+    User.addUserAnimals(idUser, {$push: {"animalsFollowing": animalToAdd}}, function(err, user) {
+        if (err) {
+            throw err;
+        }
+    });
+
+    res.json({"status":"ok"});
+});
+
+app.post('/api/getAnimalsFollowingLocation',function(req,res) {
+    idUser = req.body.idUser;
+    console.log(idUser);
+
+
+    User.getUserByID(idUser,function(err,user) {
+        if (err) {
+            throw err;
+        }
+        var arrayOfLocation = [];
+        var numberAnimals = user.animalsFollowing.length;
+
+        console.log("numberAnimals " + numberAnimals);
+
+        user.animalsFollowing.forEach(function(animal) {
+            Animals.getAnimalByID(animal.id, function (err, animals) {
+                if (err) {
+                    throw err;
+                }
+                addLocationArray(animals);
+                deCount();
+            })
+        });
+        function deCount() {
+            numberAnimals--;
+            if (numberAnimals<1) {
+                console.log(arrayOfLocation);
+                var finalObject = {};
+                finalObject["status"] = "ok";
+                finalObject["animals"] = arrayOfLocation;
+                res.json(finalObject);
+            }
+        }
+
+        function addLocationArray (animal) {
+            var animalObject = {};
+
+            animalObject["id"] = animal.id;
+            animalObject["nome"] = animal.nome;
+            animalObject["lastLocation"] = animal.location[(animal.location.length-1)];
+            arrayOfLocation.push(animalObject);
+        }
+
+    });
+})
 
 app.listen(3000);
 
