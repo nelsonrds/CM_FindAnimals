@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-14T15:00:50+01:00
+ * @Last modified time: 2017-04-14T15:11:26+01:00
  */
 
 
@@ -237,10 +237,16 @@ app.post('/api/getAnimalsFollowingLocation',function(req,res) {
 
     User.getUserByID(idUser,function(err,user) {
         if (err) {
-            throw err;
+            res.json({'status' : 'noUser'});
+            return
         }
         var arrayOfLocation = [];
         var numberAnimals = user.animalsFollowing.length;
+
+        if (numberAnimals==0) {
+            res.json({'status' : 'noAnimals'});
+            return
+        }
 
         console.log("numberAnimals " + numberAnimals);
 
