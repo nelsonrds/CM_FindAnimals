@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-14T15:11:26+01:00
+ * @Last modified time: 2017-04-14T17:30:33+01:00
  */
 
 
@@ -232,8 +232,11 @@ app.post('/api/addAnimalToUser',function(req,res) {
 
 app.post('/api/getAnimalsFollowingLocation',function(req,res) {
     idUser = req.body.idUser;
-    console.log(idUser);
-
+    if (idUser==undefined) {
+        res.json({'status' : 'noParameters'});
+        return
+    }
+    
 
     User.getUserByID(idUser,function(err,user) {
         if (err) {
@@ -248,8 +251,6 @@ app.post('/api/getAnimalsFollowingLocation',function(req,res) {
             return
         }
 
-        console.log("numberAnimals " + numberAnimals);
-
         user.animalsFollowing.forEach(function(animal) {
             Animals.getAnimalByID(animal.id, function (err, animals) {
                 if (err) {
@@ -262,7 +263,6 @@ app.post('/api/getAnimalsFollowingLocation',function(req,res) {
         function deCount() {
             numberAnimals--;
             if (numberAnimals<1) {
-                console.log(arrayOfLocation);
                 var finalObject = {};
                 finalObject["status"] = "ok";
                 finalObject["animals"] = arrayOfLocation;
