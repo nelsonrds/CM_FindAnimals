@@ -9,7 +9,8 @@
   "dependencies": {
 	"express":"*",
 	"body-parser":"*",
-	"mongoose":"*"
+	"mongoose":"*",
+	"geojson":"*"
   },
   "author": "hfsf",
   "license": "ISC"

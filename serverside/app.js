@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-10T13:49:16+01:00
+ * @Last modified time: 2017-04-13T22:10:34+01:00
  */
 
 
@@ -12,6 +12,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var GeoJSON = require('geojson');
 
 Animals = require('./models/animals');
 User = require('./models/user');
@@ -163,6 +164,55 @@ app.get('/api/users',function (req, res) {
     })
 });
 
+app.post('/api/user/addFence', function(req, res) {
+    console.log("\n");
+    id = req.body.idUser;
+    coordenadas = req.body.coordenadas;
+
+    const geometry = [coordenadas.map(result => [result.latitude, result.longitude])]
+    const finalObject = {
+        type: 'Polygon',
+        geometry
+    }
+
+
+    User.addUserFence(id,{$push: {"location": finalObject}}, function(err, user) {
+        if (err) {
+            throw err;
+        }
+    });
+
+    User.addUserFence(id,{$push: {"locationInCoordinates": coordenadas}}, function(err, user) {
+        if (err) {
+            throw err;
+        }
+    });
+    res.json({result:"true"});
+});
+
+app.get('/api/getFence/:_id', function (req, res) {
+    idRecebido = req.params._id;
+    User.getUserByID(idRecebido,function(err, user) {
+        var resultadoChamada = {};
+
+        if (err) {
+            console.log("Entrei1");
+            resultadoChamada["status"] = "idNotFound";
+        } else {
+            console.log("Entrei2");
+            resultadoChamada["status"] = "clear";
+        }
+
+        data = user.locationInCoordinates[0];
+        if (data!=undefined) {
+            resultadoChamada["status"] = "ok";
+            resultadoChamada["coordenadas"] = data;
+        }
+
+        res.json(resultadoChamada);
+
+    });
+});
 
 app.listen(3000);
 
