@@ -126,7 +126,6 @@ public class animalFragment extends android.support.v4.app.Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Animal animal = (Animal)parent.getItemAtPosition(position);
-                            Toast.makeText(getContext(), animal.getAnimalName(), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }catch(JSONException ex){

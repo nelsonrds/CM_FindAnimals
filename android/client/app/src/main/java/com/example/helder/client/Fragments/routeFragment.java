@@ -60,7 +60,7 @@ public class routeFragment extends android.support.v4.app.Fragment {
     public void onResume() {
         super.onResume();
         for(int i = 0; i < lista.size(); i++){
-            Toast.makeText(getContext(), "nome:21321 " + lista.get(i).getAnimalName() + " estado: " + lista.get(i).getChecked() ,Toast.LENGTH_SHORT).show();
+
         }
     }
 }

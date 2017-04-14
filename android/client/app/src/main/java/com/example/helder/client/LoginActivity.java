@@ -124,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
                         i.putExtra(Utils.param_Userid, userID);
                         startActivity(i);
-
+                        finish();
                     }else{
                         Toast.makeText(LoginActivity.this, "Login Inválido", Toast.LENGTH_LONG).show();
                     }

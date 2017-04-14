@@ -1,6 +1,5 @@
 package com.example.helder.client.Fragments;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,15 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.example.helder.client.InforActivity;
 import com.example.helder.client.R;
 import com.example.helder.client.Utils;
 import com.example.helder.client.WebServices.Singleton;
@@ -39,13 +35,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Handler;
+import android.os.Handler;
 
-import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.example.helder.client.MainActivity.UserID;
 
 /**
@@ -69,7 +62,9 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
     PolygonOptions polyOp;
     ArrayList<Circle> cir;
 
-    Handler handler;
+    ArrayList<LatLng> lastPosition;
+
+    Handler ha;
 
     public mapFragment() {
     }
@@ -145,6 +140,8 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
 
         cir = new ArrayList<>();
 
+        lastPosition = new ArrayList<>();
+
         checkIfNew = false;
 
         existFence = false;
@@ -152,28 +149,67 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
         getFenceWS();
 
 
-
         return view;
     }
 
-    
+    private void handler(){
+        ha = new Handler();
+        ha.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                //call function
+                calltimer();
+                Toast.makeText(getContext(), "mudou posiçao :D", Toast.LENGTH_SHORT).show();
+                ha.postDelayed(this, 5000);
+            }
+
+        }, 5000);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        // Make sure that we are currently visible
+        if (this.isVisible()) {
+            // If we are becoming invisible, then...
+            if (!isVisibleToUser) {
+                ha.removeCallbacksAndMessages(null);
+            }else{
+                handler();
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Toast.makeText(getContext(), "Resuming", Toast.LENGTH_SHORT).show();
+        handler();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Toast.makeText(getContext(), "Pausing", Toast.LENGTH_SHORT).show();
+        ha.removeCallbacksAndMessages(null);
+    }
 
     private void calltimer(){
-        /*//your function
+        //your function
         //limpar ponto
         nMap.clear();
         nMap.addPolygon(polyOp);
                 //chamar ws
-                LatLng noa = new LatLng(41.69621,-8.8430194);
                 //desenhar circulo
 
-                animalCircle = nMap.addCircle(new CircleOptions()
-                        .center(new LatLng(noa.latitude, noa.longitude))
+                /*animalCircle = nMap.addCircle(new CircleOptions()
+                        .center(new LatLng(lastPosition.latitude, lastPosition.longitude))
                         .radius(10)
                         .strokeColor(Color.GREEN)
-                        .fillColor(Color.BLACK));
-*/
-        Toast.makeText(getContext(), "ola! ", Toast.LENGTH_SHORT).show();
+                        .fillColor(Color.BLACK));*/
+        getLastPositionWS();
     }
 
     @Override
@@ -181,6 +217,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
         inflater.inflate(R.menu.menu_mapfragment, menu);
         super.onCreateOptionsMenu(menu,inflater);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -296,11 +333,6 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
         Singleton.getInstance(getContext()).addToRequestQeueu(getRequest);
     }
 
-
-    private void getFenceLocal(){
-
-    }
-
     private void sendFenceWS(){
         String url = Utils.URL_PRINCIPAL + "/api/user/addFence";
 
@@ -355,55 +387,39 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
 
                     }
                 }
-        );/*{
+        );
+        Singleton.getInstance(getContext()).addToRequestQeueu(putRequest);
+    }
 
-            @Override
-            protected Map<String, String> getParams()
-            {
+    private void getLastPositionWS(){
+        String url = Utils.URL_PRINCIPAL + "/api/getAnimalsFollowingLocation";
 
-                JSONArray jsonObjectMembers = new JSONArray();
-                for (int i = 0; i < pontos.size(); i++) {
-                    try {
-                        JSONObject jo = new JSONObject();
-                        jo.put("latitude", String.valueOf(pontos.get(i).latitude));
-                        jo.put("longitude", String.valueOf(pontos.get(i).longitude));
+        JSONObject JO = new JSONObject();
+        try{
+            JO.put("idUser", UserID);
+        }catch(Exception io){
 
-                        jsonObjectMembers.put(jo);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+        }
+
+        JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.POST, url, JO,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // response
+
+                        Log.d("Response", response.toString());
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+
                     }
                 }
-
-                JSONArray jsonObjectMembers2 = new JSONArray();
-                for (int i = 0; i < pontos.size(); i++) {
-                    try {
-                        JSONObject jo2 = new JSONObject();
-                        jo2.put(String.valueOf(pontos.get(i).latitude), String.valueOf(pontos.get(i).longitude));
-                        jsonObjectMembers2.put(jo2);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                Map<String, String>  params = new HashMap<String, String>();
-                params.put("idUser", UserID);
-                params.put("coordenadas", jsonObjectMembers.toString());
-                params.put("coordenadasXY", jsonObjectMembers2.toString());
-
-                JSONObject JO = new JSONObject();
-                try{
-                    JO.put("idUser", UserID);
-                    JO.put("coordenadas", jsonObjectMembers);
-                    JO.put("coordenadasXY", jsonObjectMembers2);
-                }catch(Exception io){
-
-                }
-
-
-
-                return params;
-            }
-        };*/
+        );
         Singleton.getInstance(getContext()).addToRequestQeueu(putRequest);
     }
 
