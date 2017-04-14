@@ -31,6 +31,7 @@
             android:width="180dp"
             android:hint="username"
             android:maxLength="17"
+            android:textSize="20dp"
             android:textAlignment="center"
             android:background="@android:color/transparent"
             android:layout_width="wrap_content"
@@ -41,6 +42,7 @@
 
         <EditText
             android:maxLength="17"
+            android:textSize="20dp"
             android:maxLines="1"
             android:width="180dp"
             android:id="@+id/edit_password"

@@ -11,5 +11,8 @@ public class Utils {
     public static final String param_sharedPreferences = "sharedpreferences";
     public static final String param_username = "username";
     public static final String param_password = "password";
-    public static final String URL_PRINCIPAL = "http://5a5c4e3e.ngrok.io";
+    public static final String param_dontShow = "false";
+
+    public static final String URL_PRINCIPAL = "http://9619d8e9.ngrok.io";
+    public static final String URL_LOGIN = "http://eurogather.net:3000";
 }

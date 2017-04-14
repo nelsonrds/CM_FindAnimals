@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -40,7 +41,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Handler;
 
+import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.example.helder.client.MainActivity.UserID;
 
 /**
@@ -60,8 +65,11 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
     Boolean existFence;
 
     Circle circle;
+    Circle animalCircle;
     PolygonOptions polyOp;
     ArrayList<Circle> cir;
+
+    Handler handler;
 
     public mapFragment() {
     }
@@ -96,9 +104,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
         btclear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Limpar", Toast.LENGTH_SHORT).show();
-                pontos.clear();
-
+                pontos = new ArrayList<>();
             }
         });
 
@@ -112,14 +118,13 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
                 btcheck.setVisibility(View.GONE);
                 checkIfNew = false;
                 sendFenceWS();
-                Toast.makeText(getContext(),pontos.toString(), Toast.LENGTH_LONG).show();
-
+                polyOp = new PolygonOptions();
                 polyOp.addAll(pontos);
                 polyOp.strokeColor(Color.RED);
                 polyOp.fillColor(Color.TRANSPARENT);
                 nMap.addPolygon(polyOp);
 
-                pontos.clear();
+                pontos = new ArrayList<>();
                 for(int i = 0; i < cir.size() ; i++){
                     cir.get(i).remove();
                 }
@@ -144,7 +149,31 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
 
         existFence = false;
 
+        getFenceWS();
+
+
+
         return view;
+    }
+
+    
+
+    private void calltimer(){
+        /*//your function
+        //limpar ponto
+        nMap.clear();
+        nMap.addPolygon(polyOp);
+                //chamar ws
+                LatLng noa = new LatLng(41.69621,-8.8430194);
+                //desenhar circulo
+
+                animalCircle = nMap.addCircle(new CircleOptions()
+                        .center(new LatLng(noa.latitude, noa.longitude))
+                        .radius(10)
+                        .strokeColor(Color.GREEN)
+                        .fillColor(Color.BLACK));
+*/
+        Toast.makeText(getContext(), "ola! ", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -218,10 +247,55 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
     }
 
     private void getFenceWS(){
-        String url = "";
+        String url = Utils.URL_PRINCIPAL + "/api/getFence/";
+        String pedido = url + UserID;
+        pontos.clear();
+/*
+        status = idNotFound, quando não encontra o ID,
+        status = clear, quando não tem cerca adicionada,
+        status = ok, quando tem cerca
+        /api/getFence/id */
 
-//        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, )
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, pedido, null, new Response.Listener<JSONObject>(){
+
+            @Override
+            public void onResponse(JSONObject response){
+                try{
+                    String res = response.getString("status");
+                    JSONArray js = response.getJSONArray("coordenadas");
+
+                    for(int i = 0; i < js.length(); i++){
+                        JSONObject jo = js.getJSONObject(i);
+                        Double latitude = Double.valueOf(jo.getString("latitude")).doubleValue();
+                        Double longitude = Double.valueOf(jo.getString("longitude")).doubleValue();
+
+                        LatLng coord = new LatLng(latitude, longitude);
+
+                        pontos.add(coord);
+                    }
+                    polyOp.addAll(pontos);
+                    polyOp.strokeColor(Color.RED);
+                    polyOp.fillColor(Color.TRANSPARENT);
+                    nMap.addPolygon(polyOp);
+
+                    pontos.clear();
+                    for(int i = 0; i < cir.size() ; i++){
+                        cir.get(i).remove();
+                    }
+                    existFence = true;
+
+                }catch (JSONException ex){}
+            }
+        }, new Response.ErrorListener(){
+            @Override
+            public void onErrorResponse(VolleyError error){
+                Toast.makeText(getContext(), error + " ola", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+        Singleton.getInstance(getContext()).addToRequestQeueu(getRequest);
     }
+
 
     private void getFenceLocal(){
 

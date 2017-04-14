@@ -1,11 +1,14 @@
 package com.example.helder.client;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText editUsername;
     EditText editPassword;
+    Boolean state;
 
     public static final String KEY_USERNAME = "user";
     public static final String KEY_PASSWORD = "password";
@@ -56,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         userID = "Null";
+        state = false;
 
         editUsername = (EditText)findViewById(R.id.edit_username);
         editPassword = (EditText)findViewById(R.id.edit_password);
@@ -63,6 +68,10 @@ public class LoginActivity extends AppCompatActivity {
         mDBHelper = new DB(this);
         db = mDBHelper.getReadableDatabase();
 
+        SharedPreferences shared = getPreferences(Context.MODE_PRIVATE);
+        editUsername.setText(shared.getString(Utils.param_username, ""));
+        editPassword.setText(shared.getString(Utils.param_password, ""));
+        state = shared.getBoolean(Utils.param_dontShow, false);
 
     }
 
@@ -80,6 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 i.putExtra(Utils.param_Userid, userID);
                 startActivity(i);
+
             }else{
                 Toast.makeText(this,"nao entrou!",Toast.LENGTH_SHORT).show();
             }
@@ -88,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void verifyLogin(){
-        final String url = "http://eurogather.net:3000/api/loginCheck";
+        final String url = Utils.URL_PRINCIPAL + "/api/loginCheck";
         //final String user = editUsername.getText().toString().trim();
         //final String password = editPassword.getText().toString().trim();
         final String user = "helder";
@@ -158,5 +168,30 @@ public class LoginActivity extends AppCompatActivity {
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    private void saveLogin(){
+        new AlertDialog.Builder(this)
+                .setTitle("Save Login")
+                .setMessage("Are you sure you want to save this entry?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+
+                        SharedPreferences shared = getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = shared.edit();
+                        editor.putString(Utils.param_username, editUsername.getText().toString());
+                        editor.putString(Utils.param_password, editPassword.getText().toString());
+                        editor.putBoolean(Utils.param_dontShow, true);
+                        editor.commit();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }

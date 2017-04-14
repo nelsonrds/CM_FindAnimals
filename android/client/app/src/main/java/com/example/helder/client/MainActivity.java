@@ -1,5 +1,6 @@
 package com.example.helder.client;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.Fragment;
 
@@ -103,6 +105,7 @@ public class MainActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_newzone:
+
                 return true;
             case R.id.action_info:
                 Intent i = new Intent(this, InforActivity.class);
