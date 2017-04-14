@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-14T17:30:33+01:00
+ * @Last modified time: 2017-04-14T18:24:47+01:00
  */
 
 
@@ -236,7 +236,8 @@ app.post('/api/getAnimalsFollowingLocation',function(req,res) {
         res.json({'status' : 'noParameters'});
         return
     }
-    
+    console.log("getAnimalsFollowingLocation " + idUser);
+
 
     User.getUserByID(idUser,function(err,user) {
         if (err) {
@@ -276,6 +277,59 @@ app.post('/api/getAnimalsFollowingLocation',function(req,res) {
             animalObject["id"] = animal.id;
             animalObject["nome"] = animal.nome;
             animalObject["lastLocation"] = animal.location[(animal.location.length-1)];
+            arrayOfLocation.push(animalObject);
+        }
+
+    });
+})
+
+app.post('/api/getAnimalsFollowingLocationAll',function(req,res) {
+    idUser = req.body.idUser;
+    if (idUser==undefined) {
+        res.json({'status' : 'noParameters'});
+        return
+    }
+    console.log("getAnimalsFollowingLocationAll " + idUser);
+
+
+    User.getUserByID(idUser,function(err,user) {
+        if (err) {
+            res.json({'status' : 'noUser'});
+            return
+        }
+        var arrayOfLocation = [];
+        var numberAnimals = user.animalsFollowing.length;
+
+        if (numberAnimals==0) {
+            res.json({'status' : 'noAnimals'});
+            return
+        }
+
+        user.animalsFollowing.forEach(function(animal) {
+            Animals.getAnimalByID(animal.id, function (err, animals) {
+                if (err) {
+                    throw err;
+                }
+                addLocationArray(animals);
+                deCount();
+            })
+        });
+        function deCount() {
+            numberAnimals--;
+            if (numberAnimals<1) {
+                var finalObject = {};
+                finalObject["status"] = "ok";
+                finalObject["animals"] = arrayOfLocation;
+                res.json(finalObject);
+            }
+        }
+
+        function addLocationArray (animal) {
+            var animalObject = {};
+
+            animalObject["id"] = animal.id;
+            animalObject["nome"] = animal.nome;
+            animalObject["location"] = animal.location;
             arrayOfLocation.push(animalObject);
         }
 
