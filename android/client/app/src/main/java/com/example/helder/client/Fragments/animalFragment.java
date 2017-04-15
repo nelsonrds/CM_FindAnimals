@@ -30,6 +30,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.example.helder.client.MainActivity.UserID;
+
 /**
  * Created by Nelson on 24/03/2017.
  */
@@ -85,11 +87,17 @@ public class animalFragment extends android.support.v4.app.Fragment {
 
 
     private void getAnimalsWS(){
-        final String url = "http://eurogather.net:3000/api/animals";
+        final String url = Utils.URL_PRINCIPAL + "/api/getAnimalsFollowingLocationAll";
 
         //Toast.makeText(getContext(), "getting data...", Toast.LENGTH_SHORT).show();
 
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        JSONObject JO = new JSONObject();
+        try{
+            JO.put("idUser", UserID);
+        }catch(Exception io){
+
+        }
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.POST, url, JO, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 // display response
@@ -104,7 +112,6 @@ public class animalFragment extends android.support.v4.app.Fragment {
 
                         Animal aux = new Animal();
                         aux.setAnimalName(jobj.getString("nome"));
-                        aux.setOwnerId(jobj.getString("owner"));
                         aux.setChecked(true);
 
                         JSONArray jaLocation = jobj.getJSONArray("location");

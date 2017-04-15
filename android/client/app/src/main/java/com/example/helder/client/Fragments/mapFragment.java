@@ -17,6 +17,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.helder.client.DataBase.Animal;
 import com.example.helder.client.R;
 import com.example.helder.client.Utils;
 import com.example.helder.client.WebServices.Singleton;
@@ -39,6 +40,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import android.os.Handler;
 
+import static com.example.helder.client.Fragments.animalFragment.lista;
 import static com.example.helder.client.MainActivity.UserID;
 
 /**
@@ -100,6 +102,8 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
             @Override
             public void onClick(View v) {
                 pontos = new ArrayList<>();
+
+                handler();
             }
         });
 
@@ -124,6 +128,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
                     cir.get(i).remove();
                 }
                 existFence = true;
+                handler();
             }
         });
 
@@ -199,16 +204,21 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
     private void calltimer(){
         //your function
         //limpar ponto
+        lastPosition = new ArrayList<>();
         nMap.clear();
         nMap.addPolygon(polyOp);
                 //chamar ws
                 //desenhar circulo
+        Toast.makeText(getContext(), lastPosition.size() + "", Toast.LENGTH_SHORT).show();
+        for(int i = 0; i < lastPosition.size() ; i++){
+            Toast.makeText(getContext(), lastPosition.get(i).toString(), Toast.LENGTH_SHORT).show();
+            animalCircle = nMap.addCircle(new CircleOptions()
+                    .center(new LatLng(lastPosition.get(i).latitude, lastPosition.get(i).longitude))
+                    .radius(10)
+                    .strokeColor(Color.GREEN)
+                    .fillColor(Color.BLACK));
+        }
 
-                /*animalCircle = nMap.addCircle(new CircleOptions()
-                        .center(new LatLng(lastPosition.latitude, lastPosition.longitude))
-                        .radius(10)
-                        .strokeColor(Color.GREEN)
-                        .fillColor(Color.BLACK));*/
         getLastPositionWS();
     }
 
@@ -226,6 +236,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
                 if(existFence){
                     nMap.clear();
                     existFence = false;
+                    ha.removeCallbacksAndMessages(null);
                 }
                 return true;
             default: return super.onOptionsItemSelected(item);
@@ -280,6 +291,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
                     .strokeColor(Color.RED)
                     .fillColor(Color.BLUE));
             cir.add(circle);
+            ha.removeCallbacksAndMessages(null);
         }
     }
 
@@ -287,11 +299,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
         String url = Utils.URL_PRINCIPAL + "/api/getFence/";
         String pedido = url + UserID;
         pontos.clear();
-/*
-        status = idNotFound, quando não encontra o ID,
-        status = clear, quando não tem cerca adicionada,
-        status = ok, quando tem cerca
-        /api/getFence/id */
+
 
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, pedido, null, new Response.Listener<JSONObject>(){
 
@@ -400,6 +408,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
         }catch(Exception io){
 
         }
+        lastPosition = new ArrayList<>();
 
         JsonObjectRequest putRequest = new JsonObjectRequest(Request.Method.POST, url, JO,
                 new Response.Listener<JSONObject>()
@@ -407,8 +416,33 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
                     @Override
                     public void onResponse(JSONObject response) {
                         // response
+                        try{
+                            JSONArray ja = response.getJSONArray("animals");
+                            for(int i = 0; i < ja.length() ; i++){
+                                JSONObject jo = ja.getJSONObject(i);
+                                Animal ws = new Animal();
+                                ws.setAnimalName(jo.getString("nome"));
 
-                        Log.d("Response", response.toString());
+                                for(int j = 0 ; j < lista.size(); j++){
+                                    Animal loc = new Animal();
+                                    loc = lista.get(j);
+                                    if(loc.getAnimalName() == ws.getAnimalName()){
+                                        if(loc.getChecked()){
+                                            //desenha
+                                            JSONObject last = jo.getJSONObject("lastLocation");
+                                            double lat = Double.valueOf(last.getString("latitude"));
+                                            double lng = Double.valueOf(last.getString("longitude"));
+                                            LatLng nova = new LatLng(lat,lng);
+                                            lastPosition.add(nova);
+                                        }
+                                    }
+                                }
+                            }
+
+
+                        }catch(Exception ex){
+                            Toast.makeText(getContext(), ex.toString(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 },
                 new Response.ErrorListener()
