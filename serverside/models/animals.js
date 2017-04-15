@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-14T13:38:06+01:00
+ * @Last modified time: 2017-04-14T21:08:51+01:00
  */
 
 
@@ -55,3 +55,9 @@ module.exports.addAnimalLocation = function (id,locals, callback) {
         callback(err,animal);
     });
 };
+
+module.exports.updateAnimal = function(id,cmd,callback) {
+    Animals.findByIdAndUpdate(id,cmd,{},function(err,animal) {
+        callback(err,animal);
+    });
+}

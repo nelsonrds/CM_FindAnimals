@@ -10,7 +10,8 @@
 	"express":"*",
 	"body-parser":"*",
 	"mongoose":"*",
-	"geojson":"*"
+    "geojson":"*",
+    "terraformer":"*"
   },
   "author": "hfsf",
   "license": "ISC"
