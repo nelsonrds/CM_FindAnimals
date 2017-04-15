@@ -9,7 +9,6 @@
 
 
     <ImageView
-
         android:layout_above="@+id/linear_1"
         android:layout_centerHorizontal="true"
         android:src="@drawable/logo"
@@ -18,9 +17,10 @@
         android:layout_height="wrap_content" />
 
     <LinearLayout
+        android:layout_centerInParent="true"
         android:layout_marginTop="70dp"
         android:id="@+id/linear_1"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:orientation="vertical"
         android:layout_height="wrap_content">
@@ -31,26 +31,28 @@
             android:width="180dp"
             android:hint="username"
             android:maxLength="17"
-            android:textSize="20dp"
+            android:textSize="25dp"
             android:textAlignment="center"
-            android:background="@android:color/transparent"
+
             android:layout_width="wrap_content"
             android:textColorHint="@color/colorWhite"
             android:textColor="@color/colorWhite"
             android:layout_marginBottom="20dp"
+            android:padding="5dp"
             android:layout_height="wrap_content" />
 
         <EditText
+            android:inputType="textPassword"
             android:maxLength="17"
-            android:textSize="20dp"
+            android:textSize="25dp"
             android:maxLines="1"
             android:width="180dp"
             android:id="@+id/edit_password"
             android:hint="password"
+            android:padding="5dp"
             android:textAlignment="center"
             android:textColor="@color/colorWhite"
             android:textColorHint="@color/colorWhite"
-            android:background="@android:color/transparent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -66,6 +68,8 @@
             android:id="@+id/btentrar"
             android:textColor="@color/colorWhite"
             android:text="entrar"
+            android:layout_marginBottom="40dp"
+            android:textSize="20dp"
             android:layout_width="wrap_content"
             android:background="@null"
             android:onClick="Enter"

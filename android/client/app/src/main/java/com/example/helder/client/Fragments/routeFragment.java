@@ -1,5 +1,6 @@
 package com.example.helder.client.Fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.InflateException;
 import android.view.LayoutInflater;
@@ -18,10 +19,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
 import static com.example.helder.client.Fragments.animalFragment.lista;
+
 
 /**
  * Created by Nelson on 24/03/2017.
@@ -58,18 +61,27 @@ public class routeFragment extends android.support.v4.app.Fragment implements On
         SupportMapFragment mMap = ((SupportMapFragment)getChildFragmentManager().findFragmentById(R.id.mapa2));
         mMap.getMapAsync(this);
 
+        PolylineOptions pol = new PolylineOptions();
+
+
+        for(int i = 0; i < lista.size(); i++){
+
+            for(int j = 0; j < lista.get(i).getAnimalLocation().size(); j++){
+                String latitude = lista.get(i).getAnimalLocation().get(j).getLatitude();
+                String longitude = lista.get(i).getAnimalLocation().get(j).getLongitude();
+                LatLng aux = new LatLng(Double.valueOf(latitude), Double.valueOf(longitude));
+                pol.add(aux);
+            }
+        }
+
+        pol.color(Color.BLUE).width(4);
+        //nMap.addPolyline(pol);
 
 
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        for(int i = 0; i < lista.size(); i++){
 
-        }
-    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

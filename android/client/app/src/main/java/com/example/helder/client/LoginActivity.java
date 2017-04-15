@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -34,6 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,17 +85,15 @@ public class LoginActivity extends AppCompatActivity {
 
         if(isNetworkAvailable()){
             verifyLogin();
-            Toast.makeText(this,"entrou! e tem net",Toast.LENGTH_SHORT).show();
+
         }else{
-            if(verifyLoginLocal()){
-                Toast.makeText(this,"entrou! e nao tem net",Toast.LENGTH_SHORT).show();
+            if(verifyLoginLocal()) {
+
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 i.putExtra(Utils.param_Userid, userID);
                 startActivity(i);
-
-            }else{
-                Toast.makeText(this,"nao entrou!",Toast.LENGTH_SHORT).show();
             }
+
         }
     }
 
@@ -100,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
     private void verifyLogin(){
         final String url = Utils.URL_PRINCIPAL + "/api/loginCheck";
         //final String user = editUsername.getText().toString().trim();
-        //final String password = editPassword.getText().toString().trim();
+        //final String password = getSha1Hex(editPassword.getText().toString().trim());
         final String user = "helder";
         final String password = "b74e86682b5e0b2a3b53a8816cdfe217b74fccc1";
 
@@ -193,5 +194,26 @@ public class LoginActivity extends AppCompatActivity {
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+    }
+
+    public static String getSha1Hex(String clearString)
+    {
+        try
+        {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+            messageDigest.update(clearString.getBytes("UTF-8"));
+            byte[] bytes = messageDigest.digest();
+            StringBuilder buffer = new StringBuilder();
+            for (byte b : bytes)
+            {
+                buffer.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+            }
+            return buffer.toString();
+        }
+        catch (Exception ignored)
+        {
+            ignored.printStackTrace();
+            return null;
+        }
     }
 }

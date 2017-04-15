@@ -108,6 +108,7 @@ public class animalFragment extends android.support.v4.app.Fragment {
                     //Toast.makeText(getContext(), ""+response.getString(an), Toast.LENGTH_LONG).show();
                     JSONArray ja = response.getJSONArray("animals");
                     for(int i = 0 ; i < ja.length(); i++){
+                        loc = new ArrayList<>();
                         JSONObject jobj = ja.getJSONObject(i);
 
                         Animal aux = new Animal();

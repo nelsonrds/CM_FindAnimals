@@ -191,28 +191,31 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
     @Override
     public void onResume() {
         super.onResume();
-        Toast.makeText(getContext(), "Resuming", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), "Resuming", Toast.LENGTH_SHORT).show();
         handler();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Toast.makeText(getContext(), "Pausing", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getContext(), "Pausing", Toast.LENGTH_SHORT).show();
         ha.removeCallbacksAndMessages(null);
     }
 
     private void calltimer(){
         //your function
         //limpar ponto
-        
+
         nMap.clear();
+
         nMap.addPolygon(polyOp);
+
+
                 //chamar ws
                 //desenhar circulo
 
         for(int i = 0; i < lastPosition.size() ; i++){
-            Toast.makeText(getContext(), lastPosition.get(i).toString(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), lastPosition.get(i).toString(), Toast.LENGTH_SHORT).show();
             animalCircle = nMap.addCircle(new CircleOptions()
                     .center(new LatLng(lastPosition.get(i).latitude, lastPosition.get(i).longitude))
                     .radius(10)
@@ -252,7 +255,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
         LatLng ltn = new LatLng(41.69621, -8.8430194);
 
         CameraPosition cm = new CameraPosition.Builder()
-                .zoom(15)
+                .zoom(13)
                 .target(ltn)
                 .build();
 
@@ -441,7 +444,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
                                             double lng = Double.valueOf(last.getString("longitude"));
                                             LatLng nova = new LatLng(lat,lng);
                                             lastPosition.add(nova);
-                                            Toast.makeText(getContext(), lastPosition.size() + "",Toast.LENGTH_SHORT).show();
+                                            //Toast.makeText(getContext(), lastPosition.size() + "",Toast.LENGTH_SHORT).show();
                                         }
                                     }else{
 

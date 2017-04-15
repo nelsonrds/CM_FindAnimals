@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Client</string>
+    <string name="app_name">Animal Finder</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
     <!-- MENU STRINGS -->
