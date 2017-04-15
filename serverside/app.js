@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-14T18:24:47+01:00
+ * @Last modified time: 2017-04-15T16:51:25+01:00
  */
 
 
@@ -12,7 +12,8 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var GeoJSON = require('geojson');
+var Terraformer = require('terraformer');
+//var GeoJSON = require('geojson');
 
 Animals = require('./models/animals');
 User = require('./models/user');
@@ -98,16 +99,35 @@ app.post('/api/addAnimal', function(req, res) {
 app.put('/api/updateAnimalLocation/:_id', function(req, res) {
     var idRecebido = req.params._id;
     var location = req.body;
+
     location["_id"] = mongoose.Types.ObjectId();
     location['treated'] = 'false';
 
+    var object1 = {};
+
+    object1.type = "Point";
+    object1.coordinates = [parseFloat(location.longitude), parseFloat(location.latitude)];
 
     Animals.addAnimalLocation(idRecebido,{$push: {"location": location}}, function(err, animal) {
         if (err) {
             throw err;
         }
-        res.json(animal);
-    })
+
+        User.getUserByID(animal.owner,function(err, user) {
+            if (err) {
+                throw err;
+            }
+
+            var newObject = {type: 'Polygon', coordinates: user.location[(user.location.length-1)].geometry}
+
+            var polygon = new Terraformer.Primitive(newObject);
+            var point = new Terraformer.Primitive(object1);
+
+            console.log("Response of within: " + point.within(polygon));
+
+        })
+    });
+    res.send({"status":"ok"});
 });
 
 
@@ -165,11 +185,11 @@ app.get('/api/users',function (req, res) {
 });
 
 app.post('/api/user/addFence', function(req, res) {
-    console.log("\n");
+    console.log("addFence");
     id = req.body.idUser;
     coordenadas = req.body.coordenadas;
 
-    const geometry = [coordenadas.map(result => [result.latitude, result.longitude])]
+    const geometry = [coordenadas.map(result => [parseFloat(result.longitude), parseFloat(result.latitude)])]
     const finalObject = {
         type: 'Polygon',
         geometry
@@ -215,13 +235,17 @@ app.get('/api/getFence/:_id', function (req, res) {
 app.post('/api/addAnimalToUser',function(req,res) {
     idUser = req.body.idUser;
     idAnimal = req.body.idAnimal;
-    console.log(idUser);
-    console.log(idAnimal);
 
     var animalToAdd = {};
     animalToAdd["id"] = idAnimal;
 
     User.addUserAnimals(idUser, {$push: {"animalsFollowing": animalToAdd}}, function(err, user) {
+        if (err) {
+            throw err;
+        }
+    });
+
+    Animals.updateAnimal(idAnimal,{"owner": idUser},function(err,animal) {
         if (err) {
             throw err;
         }
