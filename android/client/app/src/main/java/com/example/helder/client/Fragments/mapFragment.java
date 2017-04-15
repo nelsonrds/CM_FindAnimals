@@ -165,7 +165,8 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
             public void run() {
                 //call function
                 calltimer();
-                Toast.makeText(getContext(), "mudou posiçao :D", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "mudou posiçao", Toast.LENGTH_SHORT).show();
+
                 ha.postDelayed(this, 5000);
             }
 
@@ -204,12 +205,12 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
     private void calltimer(){
         //your function
         //limpar ponto
-        lastPosition = new ArrayList<>();
+        
         nMap.clear();
         nMap.addPolygon(polyOp);
                 //chamar ws
                 //desenhar circulo
-        Toast.makeText(getContext(), lastPosition.size() + "", Toast.LENGTH_SHORT).show();
+
         for(int i = 0; i < lastPosition.size() ; i++){
             Toast.makeText(getContext(), lastPosition.get(i).toString(), Toast.LENGTH_SHORT).show();
             animalCircle = nMap.addCircle(new CircleOptions()
@@ -420,21 +421,30 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
                             JSONArray ja = response.getJSONArray("animals");
                             for(int i = 0; i < ja.length() ; i++){
                                 JSONObject jo = ja.getJSONObject(i);
+
                                 Animal ws = new Animal();
                                 ws.setAnimalName(jo.getString("nome"));
+                                ws.setAnimalId(jo.getString("id"));
 
                                 for(int j = 0 ; j < lista.size(); j++){
-                                    Animal loc = new Animal();
-                                    loc = lista.get(j);
-                                    if(loc.getAnimalName() == ws.getAnimalName()){
+
+                                    Animal loc = lista.get(j);
+
+                                    //Toast.makeText(getContext(), loc.getAnimalId() + " = " + ws.getAnimalId(),Toast.LENGTH_SHORT).show();
+                                    if(loc.getAnimalId().equals(ws.getAnimalId())){
+
                                         if(loc.getChecked()){
+
                                             //desenha
                                             JSONObject last = jo.getJSONObject("lastLocation");
                                             double lat = Double.valueOf(last.getString("latitude"));
                                             double lng = Double.valueOf(last.getString("longitude"));
                                             LatLng nova = new LatLng(lat,lng);
                                             lastPosition.add(nova);
+                                            Toast.makeText(getContext(), lastPosition.size() + "",Toast.LENGTH_SHORT).show();
                                         }
+                                    }else{
+
                                     }
                                 }
                             }

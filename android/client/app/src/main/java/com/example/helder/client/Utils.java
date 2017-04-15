@@ -13,6 +13,6 @@ public class Utils {
     public static final String param_password = "password";
     public static final String param_dontShow = "false";
 
-    public static final String URL_PRINCIPAL = "http://58d1d6c2.ngrok.io";
+    public static final String URL_PRINCIPAL = "http://4546e429.ngrok.io";
     public static final String URL_LOGIN = "http://eurogather.net:3000";
 }

@@ -12,6 +12,12 @@ import com.example.helder.client.DataBase.Animal;
 import com.example.helder.client.DataBase.Location;
 import com.example.helder.client.R;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
@@ -21,9 +27,10 @@ import static com.example.helder.client.Fragments.animalFragment.lista;
  * Created by Nelson on 24/03/2017.
  */
 
-public class routeFragment extends android.support.v4.app.Fragment {
+public class routeFragment extends android.support.v4.app.Fragment implements OnMapReadyCallback {
 
     private static View view;
+    GoogleMap nMap;
 
     public routeFragment(){
     }
@@ -47,9 +54,9 @@ public class routeFragment extends android.support.v4.app.Fragment {
 
         }
 
-        //Toast.makeText(getContext(), ""+lista.size() ,Toast.LENGTH_SHORT).show();
-        //Toast.makeText(getContext(), ""+lista.get(0).getAnimalLocation().size() ,Toast.LENGTH_SHORT).show();
 
+        SupportMapFragment mMap = ((SupportMapFragment)getChildFragmentManager().findFragmentById(R.id.mapa2));
+        mMap.getMapAsync(this);
 
 
 
@@ -62,5 +69,19 @@ public class routeFragment extends android.support.v4.app.Fragment {
         for(int i = 0; i < lista.size(); i++){
 
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        nMap = googleMap;
+
+        LatLng ltn = new LatLng(41.69621, -8.8430194);
+
+        CameraPosition cm = new CameraPosition.Builder()
+                .zoom(15)
+                .target(ltn)
+                .build();
+
+        nMap.animateCamera(CameraUpdateFactory.newCameraPosition(cm));
     }
 }

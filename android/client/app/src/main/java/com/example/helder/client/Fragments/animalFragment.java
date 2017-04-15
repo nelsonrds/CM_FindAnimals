@@ -112,6 +112,7 @@ public class animalFragment extends android.support.v4.app.Fragment {
 
                         Animal aux = new Animal();
                         aux.setAnimalName(jobj.getString("nome"));
+                        aux.setAnimalId(jobj.getString("id"));
                         aux.setChecked(true);
 
                         JSONArray jaLocation = jobj.getJSONArray("location");

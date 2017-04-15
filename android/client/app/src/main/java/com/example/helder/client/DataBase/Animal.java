@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 
 public class Animal {
-    private long animalId;
+    private String animalId;
     private String animalName;
     private String ownerId;
     private Boolean treated;
@@ -20,7 +20,7 @@ public class Animal {
         isChecked = true;
     }
 
-    public Animal(long id, String name, String owner, Boolean tretd, ArrayList<Location> location, Boolean isCheck){
+    public Animal(String id, String name, String owner, Boolean tretd, ArrayList<Location> location, Boolean isCheck){
         animalId = id;
         animalName = name;
         ownerId = owner;
@@ -33,11 +33,11 @@ public class Animal {
         }
     }
 
-    public long getAnimalId() {
+    public String getAnimalId() {
         return animalId;
     }
 
-    public void setAnimalId(long animalId) {
+    public void setAnimalId(String animalId) {
         this.animalId = animalId;
     }
 
