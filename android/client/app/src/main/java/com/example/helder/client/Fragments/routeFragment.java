@@ -61,21 +61,8 @@ public class routeFragment extends android.support.v4.app.Fragment implements On
         SupportMapFragment mMap = ((SupportMapFragment)getChildFragmentManager().findFragmentById(R.id.mapa2));
         mMap.getMapAsync(this);
 
-        PolylineOptions pol = new PolylineOptions();
 
 
-        for(int i = 0; i < lista.size(); i++){
-
-            for(int j = 0; j < lista.get(i).getAnimalLocation().size(); j++){
-                String latitude = lista.get(i).getAnimalLocation().get(j).getLatitude();
-                String longitude = lista.get(i).getAnimalLocation().get(j).getLongitude();
-                LatLng aux = new LatLng(Double.valueOf(latitude), Double.valueOf(longitude));
-                pol.add(aux);
-            }
-        }
-
-        pol.color(Color.BLUE).width(4);
-        //nMap.addPolyline(pol);
 
 
         return view;
@@ -95,5 +82,22 @@ public class routeFragment extends android.support.v4.app.Fragment implements On
                 .build();
 
         nMap.animateCamera(CameraUpdateFactory.newCameraPosition(cm));
+
+        PolylineOptions pol = new PolylineOptions();
+
+
+        for(int i = 0; i < lista.size(); i++){
+
+            for(int j = 0; j < lista.get(i).getAnimalLocation().size(); j++){
+                String latitude = lista.get(i).getAnimalLocation().get(j).getLatitude();
+                String longitude = lista.get(i).getAnimalLocation().get(j).getLongitude();
+                LatLng aux = new LatLng(Double.valueOf(latitude), Double.valueOf(longitude));
+                pol.add(aux);
+            }
+        }
+
+        pol.color(Color.BLUE).width(4);
+
+        nMap.addPolyline(pol);
     }
 }
