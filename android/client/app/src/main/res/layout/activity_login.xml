@@ -33,7 +33,7 @@
             android:maxLength="17"
             android:textSize="25dp"
             android:textAlignment="center"
-
+            android:background="@android:color/transparent"
             android:layout_width="wrap_content"
             android:textColorHint="@color/colorWhite"
             android:textColor="@color/colorWhite"
@@ -53,6 +53,7 @@
             android:textAlignment="center"
             android:textColor="@color/colorWhite"
             android:textColorHint="@color/colorWhite"
+            android:background="@android:color/transparent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

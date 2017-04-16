@@ -60,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
     SQLiteDatabase db;
     Cursor c;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,13 +75,22 @@ public class LoginActivity extends AppCompatActivity {
         mDBHelper = new DB(this);
         db = mDBHelper.getReadableDatabase();
 
-        SharedPreferences shared = getPreferences(Context.MODE_PRIVATE);
-        editUsername.setText(shared.getString(Utils.param_username, ""));
-        editPassword.setText(shared.getString(Utils.param_password, ""));
+        SharedPreferences shared = getSharedPreferences(Utils.param_sharedPreferences, Context.MODE_PRIVATE);
+        String user = shared.getString(Utils.param_username, "default");
+        String pass = shared.getString(Utils.param_password, "default");
+        editUsername.setText(user);
+        editPassword.setText(pass);
         state = shared.getBoolean(Utils.param_dontShow, false);
 
         Utils.firebaseToken = FirebaseInstanceId.getInstance().getToken();
         Log.d("fbLogin",Utils.firebaseToken);
+
+        Boolean retorno = getIntent().getBooleanExtra(Utils.logout, false);
+
+        if(!retorno){
+            verifyLogin();
+        }
+
 
     }
 
@@ -92,9 +102,9 @@ public class LoginActivity extends AppCompatActivity {
         if(isNetworkAvailable()){
             verifyLogin();
 
+            saveLogin();
         }else{
             if(verifyLoginLocal()) {
-
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 i.putExtra(Utils.param_Userid, userID);
                 startActivity(i);
@@ -106,10 +116,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private void verifyLogin(){
         final String url = Utils.URL_PRINCIPAL + "/api/loginCheck";
-        //final String user = editUsername.getText().toString().trim();
-        //final String password = getSha1Hex(editPassword.getText().toString().trim());
-        final String user = "helder";
-        final String password = "b74e86682b5e0b2a3b53a8816cdfe217b74fccc1";
+        final String user = editUsername.getText().toString().trim();
+        final String password = getSha1Hex(editPassword.getText().toString().trim());
+        //final String user = "helder";
+        //final String password = "b74e86682b5e0b2a3b53a8816cdfe217b74fccc1";
 
 
         Map<String,String> params = new HashMap<String, String>();
@@ -135,6 +145,7 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                     }else{
                         Toast.makeText(LoginActivity.this, "Login Inválido", Toast.LENGTH_LONG).show();
+
                     }
 
                 }catch(Exception ex){
@@ -145,9 +156,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(LoginActivity.this, ""+error.toString(), Toast.LENGTH_LONG).show();
+
             }
         });
         Singleton.getInstance(this).addToRequestQeueu(getRequest);
+
     }
 
 
@@ -179,19 +192,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void saveLogin(){
-        new AlertDialog.Builder(this)
+        /*new AlertDialog.Builder(this)
                 .setTitle("Save Login")
                 .setMessage("Are you sure you want to save this entry?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // continue with delete
 
-                        SharedPreferences shared = getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = shared.edit();
-                        editor.putString(Utils.param_username, editUsername.getText().toString());
-                        editor.putString(Utils.param_password, editPassword.getText().toString());
-                        editor.putBoolean(Utils.param_dontShow, true);
-                        editor.commit();
+
                     }
                 })
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -200,7 +208,14 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
+                .show();*/
+
+        SharedPreferences shared = getSharedPreferences(Utils.param_sharedPreferences, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = shared.edit();
+        editor.putString(Utils.param_username, editUsername.getText().toString());
+        editor.putString(Utils.param_password, editPassword.getText().toString());
+        editor.putBoolean(Utils.param_dontShow, true);
+        editor.commit();
     }
 
     public static String getSha1Hex(String clearString)

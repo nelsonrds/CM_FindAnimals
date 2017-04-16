@@ -94,13 +94,17 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
-            case R.id.action_newzone:
+            case R.id.action_logout:
+                Intent d = new Intent(this, LoginActivity.class);
+                d.putExtra(Utils.logout, true);
+                startActivity(d);
 
+                finish();
                 return true;
             case R.id.action_info:
                 Intent i = new Intent(this, InforActivity.class);
                 startActivity(i);
-                Toast.makeText(this, "info", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "info", Toast.LENGTH_SHORT).show();
                 return true;
             default: return super.onOptionsItemSelected(item);
         }

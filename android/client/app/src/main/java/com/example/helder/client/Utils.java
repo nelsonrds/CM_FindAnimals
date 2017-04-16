@@ -12,8 +12,9 @@ public class Utils {
     public static final String param_username = "username";
     public static final String param_password = "password";
     public static final String param_dontShow = "false";
+    public static final String logout = "";
 
-    public static final String URL_PRINCIPAL = "http://5537a72e.ngrok.io";
+    public static final String URL_PRINCIPAL = "http://81514db5.ngrok.io";
 
     public static String firebaseToken = null;
 }
