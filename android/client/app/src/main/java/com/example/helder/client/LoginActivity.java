@@ -31,6 +31,7 @@ import com.example.helder.client.DataBase.DB;
 import com.example.helder.client.DataBase.Location;
 import com.example.helder.client.WebServices.Singleton;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public static final String KEY_USERNAME = "user";
     public static final String KEY_PASSWORD = "password";
+    public static final String KEY_TOKEN = "fbToken";
+
 
 
     DB mDBHelper;
@@ -75,6 +78,9 @@ public class LoginActivity extends AppCompatActivity {
         editUsername.setText(shared.getString(Utils.param_username, ""));
         editPassword.setText(shared.getString(Utils.param_password, ""));
         state = shared.getBoolean(Utils.param_dontShow, false);
+
+        Utils.firebaseToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d("fbLogin",Utils.firebaseToken);
 
     }
 
@@ -109,6 +115,7 @@ public class LoginActivity extends AppCompatActivity {
         Map<String,String> params = new HashMap<String, String>();
         params.put(KEY_USERNAME, user);
         params.put(KEY_PASSWORD, password);
+        params.put(KEY_TOKEN, Utils.firebaseToken);
 
         JsonObjectRequest getRequest = new JsonObjectRequest(url, new JSONObject(params) ,new Response.Listener<JSONObject>() {
             @Override

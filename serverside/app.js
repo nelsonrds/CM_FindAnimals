@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-15T16:51:25+01:00
+ * @Last modified time: 2017-04-16T16:14:56+01:00
  */
 
 
@@ -148,6 +148,8 @@ app.post('/api/addUser', function(req, res) {
 app.post('/api/loginCheck', function(req, res) {
     var user = req.body.user;
     var pass = req.body.password;
+    var fbToken = req.body.fbToken;
+
 
     if (user == null || pass == null) {
 
@@ -164,12 +166,23 @@ app.post('/api/loginCheck', function(req, res) {
                     'result':'OK',
                     'user': obj
                 };
+                updateFireBaseToken();
                 res.json(result);
             } else {
                 result = {
                     'result':'FAIL'
                 };
                 res.json(result);
+            }
+
+            function updateFireBaseToken() {
+                //console.log("ObjectId: " + obj._id);
+                //console.log("fbToken: "+fbToken);
+                User.updateUserByID(obj._id,{"fbToken": fbToken},function(err, animal) {
+                    if (err) {
+                        throw err;
+                    }
+                });
             }
         });
     }

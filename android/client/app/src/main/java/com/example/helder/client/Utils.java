@@ -13,6 +13,7 @@ public class Utils {
     public static final String param_password = "password";
     public static final String param_dontShow = "false";
 
-    public static final String URL_PRINCIPAL = "http://8a656e81.ngrok.io";
-    public static final String URL_LOGIN = "http://eurogather.net:3000";
+    public static final String URL_PRINCIPAL = "http://5537a72e.ngrok.io";
+
+    public static String firebaseToken = null;
 }
