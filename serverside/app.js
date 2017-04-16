@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-17T00:12:47+01:00
+ * @Last modified time: 2017-04-17T00:46:55+01:00
  */
 
 
@@ -58,12 +58,10 @@ app.get('/',function (req, res) {
 });
 
 
+// firebase
+
+
 function notifyUserAnimalOut(userReceived, animal) {
-    // console.log("Entrei no notifyUserAnimalOut");
-    console.log("User");
-    console.log(userReceived);
-    // console.log("Animal");
-    // console.log(animal);
 
     var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
         to: userReceived.fbToken,
@@ -75,18 +73,30 @@ function notifyUserAnimalOut(userReceived, animal) {
         }
     }
 
-    console.log(message);
-
     fcm.send(message, function(err, response){
         if (err) {
-            console.log("Something has gone wrong!")
-        } else {
+            console.log("Something has gone wrong with firebase!");
+            console.log(message);
+        } /*else {
             console.log("Successfully sent with response: ", response)
-        }
-    })
-
+        }*/
+    });
 }
 
+app.post('/api/user/updateFBToken', function(req, res) {
+    console.log("updateFBToken");
+
+    var userID = req.body.userID;
+    var fbToken = req.body.fbToken;
+
+    User.updateUserByID(userID,{"fbToken":fbToken},function(err,user) {
+        if (err) {
+            throw err;
+        }
+    });
+
+    res.json({"status": "ok"});
+});
 
 //#################################
 //### Animals
@@ -163,10 +173,8 @@ app.put('/api/updateAnimalLocation/:_id', function(req, res) {
                 console.log("Within of polygon");
             } else {
                 console.log("Out of polygon");
+                notifyUserAnimalOut(user,animal);
             }
-
-            notifyUserAnimalOut(user,animal);
-
         })
     });
     res.send({"status":"ok"});
