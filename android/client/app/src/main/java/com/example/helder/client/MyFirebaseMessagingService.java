@@ -31,11 +31,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         if (remoteMessage.getNotification()!= null) {
             Log.d(TAG, "Mesage body " +remoteMessage.getNotification().getBody());
-            sendeNotification(remoteMessage.getNotification().getBody());
+            sendNotification(remoteMessage.getNotification().getBody());
         }
     }
 
-    private void sendeNotification(String body) {
+    private void sendNotification(String body) {
         Intent intent = new Intent(this,MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 

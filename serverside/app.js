@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-16T17:53:56+01:00
+ * @Last modified time: 2017-04-17T00:12:47+01:00
  */
 
 
@@ -57,24 +57,6 @@ app.get('/',function (req, res) {
     res.send('Hello World!')
 });
 
-app.get('/test',function (req, res) {
-    var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
-            to: 'fy_kvHemwKE:APA91bGqZ7dtzYKJGBf26WqGGkf2q7mzEJBV_2mpknjIXR9N9q3aCfpa1w-RtIhYl2gRtroVH8RSDI2HiPG8BOM_ef8YKAdw7rHo5ke_cmGY1FrXtny7FaDnpWZzesSJJkfub0qtx2tA',
-
-            notification: {
-                title: 'Title of your push notification',
-                body: 'Body of your push notification'
-            }
-        }
-
-        fcm.send(message, function(err, response){
-            if (err) {
-                console.log("Something has gone wrong!")
-            } else {
-                console.log("Successfully sent with response: ", response)
-            }
-        })
-});
 
 function notifyUserAnimalOut(userReceived, animal) {
     // console.log("Entrei no notifyUserAnimalOut");
