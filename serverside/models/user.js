@@ -3,7 +3,7 @@
  * @Date:   2017-04-09T17:50:44+01:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-16T16:18:25+01:00
+ * @Last modified time: 2017-04-16T17:47:23+01:00
  */
 
 var mongoose = require('mongoose');
@@ -35,7 +35,7 @@ var usersSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    fbLogin: {
+    fbToken: {
         type: String,
     },
     location: [{}],
@@ -85,10 +85,6 @@ module.exports.getUserByID = function(id, callback) {
 
 module.exports.updateUserByID = function(id,params,callback) {
     User.findByIdAndUpdate(id,params,{safe: true, upsert: true, new : true, strict: false},function(err, user) {
-        console.log("id: "+id);
-        console.log("params: "+params);
-        console.log("err: "+err);
-        console.log("user: "+user);
         callback(err,user);
     });
 }

@@ -11,7 +11,8 @@
 	"body-parser":"*",
 	"mongoose":"*",
     "geojson":"*",
-    "terraformer":"*"
+    "terraformer":"*",
+    "fcm-node":"*"
   },
   "author": "hfsf",
   "license": "ISC"
