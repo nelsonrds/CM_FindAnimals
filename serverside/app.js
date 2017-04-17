@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-17T00:46:55+01:00
+ * @Last modified time: 2017-04-17T01:20:16+01:00
  */
 
 
@@ -164,16 +164,18 @@ app.put('/api/updateAnimalLocation/:_id', function(req, res) {
                 throw err;
             }
 
-            var newObject = {type: 'Polygon', coordinates: user.location[(user.location.length-1)].geometry}
+            if (user.location[0].geometry!=undefined) {
+                var newObject = {type: 'Polygon', coordinates: user.location[(user.location.length-1)].geometry}
 
-            var polygon = new Terraformer.Primitive(newObject);
-            var point = new Terraformer.Primitive(object1);
+                var polygon = new Terraformer.Primitive(newObject);
+                var point = new Terraformer.Primitive(object1);
 
-            if (point.within(polygon)) {
-                console.log("Within of polygon");
-            } else {
-                console.log("Out of polygon");
-                notifyUserAnimalOut(user,animal);
+                if (point.within(polygon)) {
+                    console.log("Within of polygon");
+                } else {
+                    console.log("Out of polygon");
+                    notifyUserAnimalOut(user,animal);
+                }
             }
         })
     });
