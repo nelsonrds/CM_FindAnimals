@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-17T01:20:16+01:00
+ * @Last modified time: 2017-04-17T01:46:08+01:00
  */
 
 
@@ -164,7 +164,7 @@ app.put('/api/updateAnimalLocation/:_id', function(req, res) {
                 throw err;
             }
 
-            if (user.location[0].geometry!=undefined) {
+            if (user.location[0] != undefined) { //Checks if the client has defined a fence
                 var newObject = {type: 'Polygon', coordinates: user.location[(user.location.length-1)].geometry}
 
                 var polygon = new Terraformer.Primitive(newObject);
