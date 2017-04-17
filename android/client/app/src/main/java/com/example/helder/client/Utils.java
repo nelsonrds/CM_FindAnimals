@@ -14,7 +14,7 @@ public class Utils {
     public static final String param_dontShow = "false";
     public static final String logout = "";
 
-    public static final String URL_PRINCIPAL = "http://81514db5.ngrok.io";
+    public static final String URL_PRINCIPAL = "http://eurogather.net:3000";
 
     public static String firebaseToken = null;
 }

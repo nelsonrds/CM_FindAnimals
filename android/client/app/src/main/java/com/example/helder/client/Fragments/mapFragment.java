@@ -208,8 +208,10 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
 
         nMap.clear();
 
-        nMap.addPolygon(polyOp);
 
+        if(existFence){
+            nMap.addPolygon(polyOp);
+        }
 
                 //chamar ws
                 //desenhar circulo
