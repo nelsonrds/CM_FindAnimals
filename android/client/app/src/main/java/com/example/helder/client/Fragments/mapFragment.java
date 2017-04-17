@@ -66,7 +66,10 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
 
     ArrayList<LatLng> lastPosition;
 
+    LatLng coord;
+
     Handler ha;
+
 
     public mapFragment() {
     }
@@ -102,7 +105,11 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
             @Override
             public void onClick(View v) {
                 pontos = new ArrayList<>();
-
+                btclear.setVisibility(View.GONE);
+                btcheck.setVisibility(View.GONE);
+                for(int i = 0; i < cir.size() ; i++){
+                    cir.get(i).remove();
+                }
                 handler();
             }
         });
@@ -122,7 +129,6 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
                 polyOp.strokeColor(Color.RED);
                 polyOp.fillColor(Color.TRANSPARENT);
                 nMap.addPolygon(polyOp);
-
                 pontos = new ArrayList<>();
                 for(int i = 0; i < cir.size() ; i++){
                     cir.get(i).remove();
@@ -151,8 +157,8 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
 
         existFence = false;
 
-        getFenceWS();
 
+        getFenceWS();
 
         return view;
     }
@@ -254,19 +260,28 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
         // mapa
         nMap = googleMap;
 
-        LatLng ltn = new LatLng(41.69621, -8.8430194);
-
-        CameraPosition cm = new CameraPosition.Builder()
-                .zoom(13)
-                .target(ltn)
-                .build();
-
-        nMap.animateCamera(CameraUpdateFactory.newCameraPosition(cm));
 
         //eventos de click
         googleMap.setOnMapClickListener(this);
         googleMap.setOnMapLongClickListener(this);
 
+    }
+
+    public void centerMap(){
+
+        LatLng ltn = new LatLng(41.69621, -8.8430194);
+        LatLng aux = coord;
+
+        if(coord == null){
+            aux = ltn;
+        }
+
+        CameraPosition cm = new CameraPosition.Builder()
+                .zoom(13)
+                .target(aux)
+                .build();
+
+        nMap.animateCamera(CameraUpdateFactory.newCameraPosition(cm));
     }
 
     @Override
@@ -320,7 +335,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
                         Double latitude = Double.valueOf(jo.getString("latitude")).doubleValue();
                         Double longitude = Double.valueOf(jo.getString("longitude")).doubleValue();
 
-                        LatLng coord = new LatLng(latitude, longitude);
+                        coord = new LatLng(latitude, longitude);
 
                         pontos.add(coord);
                     }
@@ -334,6 +349,9 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
                         cir.get(i).remove();
                     }
                     existFence = true;
+
+                    centerMap();
+
 
                 }catch (JSONException ex){}
             }
