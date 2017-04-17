@@ -95,13 +95,14 @@
         android:orientation="vertical"
         android:paddingTop="15dp">
 
-        <EditText
-            android:id="@+id/etAnimalID"
+        <Spinner
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/animal_id"
-            android:textAlignment="center"
-            android:textSize="30sp"/>
+            android:id="@+id/etAnimalID"
+            android:textAlignment="center">
+        </Spinner
+>
+
     </LinearLayout>
 
 

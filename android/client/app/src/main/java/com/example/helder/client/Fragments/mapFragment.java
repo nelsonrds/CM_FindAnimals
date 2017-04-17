@@ -327,7 +327,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
             @Override
             public void onResponse(JSONObject response){
                 try{
-                    String res = response.getString("status");
+
                     JSONArray js = response.getJSONArray("coordenadas");
 
                     for(int i = 0; i < js.length(); i++){
