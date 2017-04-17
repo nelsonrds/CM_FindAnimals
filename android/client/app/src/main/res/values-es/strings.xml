@@ -6,4 +6,18 @@
     <string name="action_logout">Logout</string>
     <string name="action_info">Info</string>
     <string name="action_delete">Apagar Fence</string>
+
+    <!-- FRAGMENTOS -->
+    <string name="fragment_map">Mapa</string>
+    <string name="fragment_animals">Animales</string>
+    <string name="fragment_route">Trajectos</string>
+
+
+    <!-- INFORMAÇÃO -->
+    <string name="animal_info">Animal Finder Informacion</string>
+    <string name="nelsonOwner_info">Nelson Rodrigues 16921</string>
+    <string name="helderOwner_info">Helder Ferreira 16935</string>
+    <string name="escola_info">IPVC - ESTG</string>
+    <string name="professora_info">Prof. Sara Paiva</string>
+    <string name="ano_info">2016/2017</string>
 </resources>

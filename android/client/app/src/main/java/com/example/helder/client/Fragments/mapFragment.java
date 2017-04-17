@@ -119,7 +119,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
         btcheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Aceitar", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "Aceitar", Toast.LENGTH_SHORT).show();
                 btclear.setVisibility(View.GONE);
                 btcheck.setVisibility(View.GONE);
                 checkIfNew = false;
@@ -171,7 +171,7 @@ public class mapFragment extends android.support.v4.app.Fragment implements OnMa
             public void run() {
                 //call function
                 calltimer();
-                Toast.makeText(getContext(), "mudou posiçao", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "mudou posiçao", Toast.LENGTH_SHORT).show();
 
                 ha.postDelayed(this, 5000);
             }

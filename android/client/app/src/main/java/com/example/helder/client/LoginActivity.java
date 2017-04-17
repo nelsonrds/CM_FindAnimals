@@ -83,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         state = shared.getBoolean(Utils.param_dontShow, false);
 
         Utils.firebaseToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d("fbLogin",Utils.firebaseToken);
+        //Log.d("fbLogin",Utils.firebaseToken);
 
         Boolean retorno = getIntent().getBooleanExtra(Utils.logout, false);
 

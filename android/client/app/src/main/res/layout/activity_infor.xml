@@ -7,8 +7,67 @@
     tools:context="com.example.helder.client.InforActivity">
 
     <TextView
-        android:layout_centerInParent="true"
-        android:text="Info"
+        android:id="@+id/tittleinformation"
+        android:textSize="30dp"
+        android:paddingTop="50dp"
+        android:textColor="@color/cast_expanded_controller_background_color"
+        android:layout_centerHorizontal="true"
+        android:text="@string/animal_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/helderid"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/tittleinformation"
+        android:paddingTop="100dp"
+        android:text="@string/helderOwner_info"
+        android:textSize="20dp"
+        android:textColor="@color/cast_expanded_controller_background_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/nelsonid"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/helderid"
+        android:paddingTop="20dp"
+        android:text="@string/nelsonOwner_info"
+        android:textSize="20dp"
+        android:textColor="@color/cast_expanded_controller_background_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/escolaid"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/nelsonid"
+        android:paddingTop="20dp"
+        android:text="@string/escola_info"
+        android:textSize="20dp"
+        android:textColor="@color/cast_expanded_controller_background_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/profsora"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/escolaid"
+        android:paddingTop="20dp"
+        android:text="@string/professora_info"
+        android:textSize="20dp"
+        android:textColor="@color/cast_expanded_controller_background_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/anoda"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/profsora"
+        android:paddingTop="20dp"
+        android:text="@string/ano_info"
+        android:textSize="20dp"
+        android:textColor="@color/cast_expanded_controller_background_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

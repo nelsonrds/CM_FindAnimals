@@ -3,6 +3,7 @@ package com.example.helder.animal;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnLocalizar;
     private Button btnParar;
 
-    final String urlInicial = "http://5b9d96bb.ngrok.io/api/";
+    final String urlInicial = "http://eurogather.net:3000/api/";
 
     private ArrayList<Animal> animais;
     private ArrayList<String> animalName;
@@ -86,11 +87,10 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> arg0, View arg1,int position, long id) {
                 // TODO Auto-generated method stub
 
-
+                ((TextView) arg0.getChildAt(0)).setTextColor(Color.BLACK);
                 for(int i = 0; i < animais.size(); i++){
                     if(animalName.get(position).toString().equals(animais.get(i).getAnimalName())){
                         animalID = animais.get(i).getAnimalId();
-                        Toast.makeText(MainActivity.this, animalID , Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -105,9 +105,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-
-
-
 
 
         tvLatitude = (TextView) findViewById(R.id.tvLatitude);
@@ -302,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getAnimalsWS(){
-        String url = "http://5b9d96bb.ngrok.io/api/animals";
+        String url = urlInicial + "animals";
 
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                 @Override
@@ -320,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
                             aux.setAnimalId(id);
                             animais.add(aux);
                             animalName.add(nome);
-                            Toast.makeText(MainActivity.this, nome + id, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(MainActivity.this, nome + id, Toast.LENGTH_SHORT).show();
                         }
 
                     }catch(JSONException ex){
