@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         longitudeNow = longitude;
         latitudeNow = latitude;
 
-        String url = urlInicial + "updateAnimalLocation/";
+        String url = urlInicial + "updateAnimalLocation/" + animalID;
         StringRequest putRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
