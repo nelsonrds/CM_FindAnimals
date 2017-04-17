@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-17T01:46:08+01:00
+ * @Last modified time: 2017-04-17T22:56:48+01:00
  */
 
 
@@ -70,6 +70,10 @@ function notifyUserAnimalOut(userReceived, animal) {
             title: 'Animal excaped',
             body: animal.nome+' is outside of the fence!',
             sound: "default"
+        },
+        data: {
+            latitude: animal.location[0].latitude,
+            longitude: animal.location[0].longitude
         }
     }
 
