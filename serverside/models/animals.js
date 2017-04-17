@@ -3,7 +3,7 @@
  * @Date:   2017-03-23T15:08:08+00:00
  * @Email:  helderferreira_@outlook.pt
  * @Last modified by:   Helder Ferreira
- * @Last modified time: 2017-04-14T21:08:51+01:00
+ * @Last modified time: 2017-04-17T01:03:09+01:00
  */
 
 
@@ -19,11 +19,9 @@ var animalsSchema = mongoose.Schema({
     },
     owner: {
         type: String,
-        required: true
     },
     treated: {
         type: Boolean,
-        required: true
     },
     dateCreation: { type: Date, default: Date.now },
     location: [{}]
